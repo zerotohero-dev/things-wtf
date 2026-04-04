@@ -1,0 +1,1192 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="all your things are belong to us!">
+      
+      
+        <meta name="author" content="Volkan Özçelik <me@volkan.io>">
+      
+      
+        <link rel="canonical" href="https://things.wtf/k8s/velero/foundations/crds/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.31">
+    
+    
+      
+        <title>Core CRDs - things: wtf?</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../../../assets/stylesheets/modern/main.53a7feaf.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-label="Navigation"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#core-crds" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="things: wtf?" class="md-header__button md-logo" aria-label="things: wtf?" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            things: wtf?
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core CRDs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/zerotohero-dev/things-wtf" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    things-wtf
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="things: wtf?" class="md-nav__button md-logo" aria-label="things: wtf?" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+
+    </a>
+    things: wtf?
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zerotohero-dev/things-wtf" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    things-wtf
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WTF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../volkan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Me
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../things/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Velero
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../headlamp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Headlamp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#backupstoragelocation-bsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BackupStorageLocation (BSL)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backup-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backup Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restore
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#volumesnapshotlocation-vsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VolumeSnapshotLocation (VSL)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schedule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deletebackuprequest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DeleteBackupRequest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backuprepository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BackupRepository
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataupload-v2alpha1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataUpload (v2alpha1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datadownload-v2alpha1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataDownload (v2alpha1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#crd-relationship-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CRD Relationship Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Up
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+  
+
+
+<h1 id="core-crds">Core CRDs<a class="headerlink" href="#core-crds" title="Permanent link">&para;</a></h1>
+<p>Velero's entire surface area is expressed as CRDs. These are the objects you 
+need to know deeply: both spec fields and status lifecycle.</p>
+<h2 id="backupstoragelocation-bsl">BackupStorageLocation (<em>BSL</em>)<a class="headerlink" href="#backupstoragelocation-bsl" title="Permanent link">&para;</a></h2>
+<p>The <strong>BSL</strong> is the most critical config object. It tells Velero where to store 
+backups and which plugin to use. Multiple BSLs are supported; 
+one is marked <code>default: true</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.provider</code></td>
+<td><code>string</code></td>
+<td>Plugin identifier, e.g. <code>velero.io/aws</code>. Must match a registered ObjectStore plugin.</td>
+</tr>
+<tr>
+<td><code>spec.objectStorage.bucket</code></td>
+<td><code>string</code></td>
+<td>Bucket/container name in the object store.</td>
+</tr>
+<tr>
+<td><code>spec.objectStorage.prefix</code></td>
+<td><code>string</code></td>
+<td>Optional prefix for all objects. Enables multiple clusters sharing one bucket.</td>
+</tr>
+<tr>
+<td><code>spec.config</code></td>
+<td><code>map[string]string</code></td>
+<td>Provider-specific config (<em>region, s3Url, checksumAlgorithm, etc.</em>).</td>
+</tr>
+<tr>
+<td><code>spec.credential</code></td>
+<td><code>SecretKeySelector</code></td>
+<td>Secret containing credentials. If absent, uses the plugin's default credential chain.</td>
+</tr>
+<tr>
+<td><code>spec.accessMode</code></td>
+<td><code>ReadWrite \| ReadOnly</code></td>
+<td><code>ReadOnly</code> for a restore-only BSL (<em>e.g. DR cluster pointing at a backup source cluster's bucket</em>).</td>
+</tr>
+<tr>
+<td><code>spec.validationFrequency</code></td>
+<td><code>duration</code></td>
+<td>How often BSLController validates availability. Defaults to <code>1m</code>.</td>
+</tr>
+<tr>
+<td><code>status.phase</code></td>
+<td><code>Available \| Unavailable</code></td>
+<td>BSLController writes this after probing the object store. Backups only proceed against <code>Available</code> BSLs.</td>
+</tr>
+</tbody>
+</table>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">velero.io/v1</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BackupStorageLocation</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">velero</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nt">spec</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">velero.io/aws</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">objectStorage</span><span class="p">:</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-velero-backups</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cluster-prod</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-west-2</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="nt">checksumAlgorithm</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="nt">credential</span><span class="p">:</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloud-credentials</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloud</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="nt">accessMode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ReadWrite</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">  </span><span class="nt">validationFrequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
+</span></code></pre></div>
+<h2 id="backup">Backup<a class="headerlink" href="#backup" title="Permanent link">&para;</a></h2>
+<p>The top-level object that describes what to back up. Created by CLI, <code>Schedule</code>, 
+or directly via <code>kubectl</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.includedNamespaces</code></td>
+<td><code>[]string</code></td>
+<td>Namespaces to include. Wildcard <code>*</code> = all (default).</td>
+</tr>
+<tr>
+<td><code>spec.excludedNamespaces</code></td>
+<td><code>[]string</code></td>
+<td>Always exclude these, even if included above.</td>
+</tr>
+<tr>
+<td><code>spec.includedResources</code></td>
+<td><code>[]string</code></td>
+<td>Resource types to include (<em>e.g. <code>deployments</code>, <code>persistentvolumeclaims</code></em>). Default: all.</td>
+</tr>
+<tr>
+<td><code>spec.excludedResources</code></td>
+<td><code>[]string</code></td>
+<td>Always skip these. Velero has a built-in excludeList for ephemeral objects (<em>Events, etc.</em>).</td>
+</tr>
+<tr>
+<td><code>spec.labelSelector</code></td>
+<td><code>LabelSelector</code></td>
+<td>Only include resources matching this selector.</td>
+</tr>
+<tr>
+<td><code>spec.orLabelSelectors</code></td>
+<td><code>[]LabelSelector</code></td>
+<td>Union of label selectors. Added in v1.10 to address the "must match ALL labels" limitation.</td>
+</tr>
+<tr>
+<td><code>spec.snapshotVolumes</code></td>
+<td><code>*bool</code></td>
+<td>Enable/disable cloud provider volume snapshotting. Set to <code>false</code> to skip volume data.</td>
+</tr>
+<tr>
+<td><code>spec.ttl</code></td>
+<td><code>duration</code></td>
+<td>After this duration, GCController will delete the backup. Default <code>720h</code> (30 days).</td>
+</tr>
+<tr>
+<td><code>spec.storageLocation</code></td>
+<td><code>string</code></td>
+<td>Name of the BSL to use. Defaults to BSL with <code>default: true</code>.</td>
+</tr>
+<tr>
+<td><code>spec.hooks</code></td>
+<td><code>BackupHooks</code></td>
+<td>Pre/post backup hooks on pods. See <a href="../../internals/hooks/">Hooks</a>.</td>
+</tr>
+<tr>
+<td><code>spec.defaultVolumesToFsBackup</code></td>
+<td><code>bool</code></td>
+<td>If true, all PVCs get Kopia file-level backup in addition to (<em>or instead of</em>) snapshots.</td>
+</tr>
+<tr>
+<td><code>status.phase</code></td>
+<td><code>enum</code></td>
+<td><code>New → InProgress → Completed \| PartiallyFailed \| Failed \| Deleting</code></td>
+</tr>
+<tr>
+<td><code>status.startTimestamp</code></td>
+<td><code>time</code></td>
+<td>Used by TTL calculation. Expiration = <code>startTimestamp + TTL</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="backup-lifecycle">Backup Lifecycle<a class="headerlink" href="#backup-lifecycle" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>New ──► InProgress ──► Completed
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                   └──► PartiallyFailed
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                   └──► Failed
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                           └──► Deleting  (via DeleteBackupRequest)
+</span></code></pre></div>
+<h2 id="restore">Restore<a class="headerlink" href="#restore" title="Permanent link">&para;</a></h2>
+<p>Restores are <strong>immutable after creation</strong>. The RestoreController reconciles 
+them <strong>exactly once</strong> to completion.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.backupName</code></td>
+<td><code>string</code></td>
+<td><strong>Required.</strong> Name of the Backup object to restore from.</td>
+</tr>
+<tr>
+<td><code>spec.namespaceMapping</code></td>
+<td><code>map[string]string</code></td>
+<td>Remap namespace names during restore. Essential for migration scenarios.</td>
+</tr>
+<tr>
+<td><code>spec.includedResources</code> / <code>excludedResources</code></td>
+<td><code>[]string</code></td>
+<td>Fine-grained resource filtering, independent of what was backed up.</td>
+</tr>
+<tr>
+<td><code>spec.restorePVs</code></td>
+<td><code>*bool</code></td>
+<td>Whether to restore PV data (via snapshot or file copy).</td>
+</tr>
+<tr>
+<td><code>spec.existingResourcePolicy</code></td>
+<td><code>none,update</code></td>
+<td><code>none</code> (default) = skip existing resources. <code>update</code> = patch existing resources from backup.</td>
+</tr>
+<tr>
+<td><code>spec.hooks</code></td>
+<td><code>RestoreHooks</code></td>
+<td>Init container hooks executed during pod restore. See <a href="../../internals/hooks/">Hooks</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="volumesnapshotlocation-vsl">VolumeSnapshotLocation (VSL)<a class="headerlink" href="#volumesnapshotlocation-vsl" title="Permanent link">&para;</a></h2>
+<p>VSL configures a cloud provider's volume snapshot API. Less critical since the 
+push toward CSI snapshots (<em>see <a href="../../extensions/csi-snapshots/">CSI Snapshots</a></em>), 
+but still required for legacy cloud provider snapshot plugins.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.provider</code></td>
+<td><code>string</code></td>
+<td>Plugin identifier for the VolumeSnapshotter implementation.</td>
+</tr>
+<tr>
+<td><code>spec.config</code></td>
+<td><code>map[string]string</code></td>
+<td>Provider-specific config (region, apiTimeout, etc.).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="schedule">Schedule<a class="headerlink" href="#schedule" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.schedule</code></td>
+<td><code>string</code></td>
+<td>Standard cron expression. Also supports <code>@every 6h</code> shorthand.</td>
+</tr>
+<tr>
+<td><code>spec.template</code></td>
+<td><code>BackupSpec</code></td>
+<td>Backup spec to instantiate on each tick. All Backup fields apply.</td>
+</tr>
+<tr>
+<td><code>spec.useOwnerReferencesInBackup</code></td>
+<td><code>bool</code></td>
+<td>If true, created Backups are owned by the Schedule and GC'd with it.</td>
+</tr>
+<tr>
+<td><code>status.lastBackup</code></td>
+<td><code>time</code></td>
+<td>When the last Backup was created. Used to compute the next trigger.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deletebackuprequest">DeleteBackupRequest<a class="headerlink" href="#deletebackuprequest" title="Permanent link">&para;</a></h2>
+<p>Creating this object triggers the <code>BackupDeletionController</code> to delete both the 
+object store artifacts <strong>and</strong> the Backup CRD. </p>
+<p><strong>Do not delete the Backup CRD directly</strong>: 
+the object store artifacts will be orphaned.</p>
+<div class="admonition danger">
+<p class="admonition-title">Operational Rule</p>
+<p>Always use <code>velero backup delete &lt;name&gt;</code> 
+(<em>or create a DeleteBackupRequest CRD</em>). </p>
+<p><strong>Never</strong> <code>kubectl delete backup &lt;name&gt;</code>.</p>
+</div>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">velero.io/v1</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DeleteBackupRequest</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete-my-backup</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">velero</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nt">spec</span><span class="p">:</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="nt">backupName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-backup</span>
+</span></code></pre></div>
+<h2 id="backuprepository">BackupRepository<a class="headerlink" href="#backuprepository" title="Permanent link">&para;</a></h2>
+<p>Tracks the lifecycle of a Kopia (<em>or legacy Restic</em>) repository per 
+<code>{namespace, BSL, repositoryType}</code> triple. Created automatically when the 
+first volume backup targets a given BSL.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.volumeNamespace</code></td>
+<td><code>string</code></td>
+<td>Namespace of the volumes this repo serves.</td>
+</tr>
+<tr>
+<td><code>spec.backupStorageLocation</code></td>
+<td><code>string</code></td>
+<td>BSL where repository data is stored.</td>
+</tr>
+<tr>
+<td><code>spec.repositoryType</code></td>
+<td><code>string</code></td>
+<td><code>kopia</code> or <code>restic</code>.</td>
+</tr>
+<tr>
+<td><code>spec.maintenanceFrequency</code></td>
+<td><code>duration</code></td>
+<td>How often to run repository maintenance. Default <code>7d</code>.</td>
+</tr>
+<tr>
+<td><code>status.phase</code></td>
+<td><code>enum</code></td>
+<td><code>New → Ready → NotReady</code></td>
+</tr>
+<tr>
+<td><code>status.lastMaintenanceTime</code></td>
+<td><code>time</code></td>
+<td>When maintenance last ran.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dataupload-v2alpha1">DataUpload (<em>v2alpha1</em>)<a class="headerlink" href="#dataupload-v2alpha1" title="Permanent link">&para;</a></h2>
+<p>Protocol CRD between CSI backup actions and data mover controllers. Created 
+by the <code>PVCBackupItemAction</code> during backup; reconciled by 
+<code>DataUploadController</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.snapshotType</code></td>
+<td><code>string</code></td>
+<td><code>CSI</code> (current) or <code>Restic</code> (legacy). Determines which uploader is used.</td>
+</tr>
+<tr>
+<td><code>spec.sourceNamespace</code></td>
+<td><code>string</code></td>
+<td>Namespace of the PVC being backed up.</td>
+</tr>
+<tr>
+<td><code>spec.sourcePVC</code></td>
+<td><code>string</code></td>
+<td>Name of the PVC.</td>
+</tr>
+<tr>
+<td><code>spec.backupStorageLocation</code></td>
+<td><code>string</code></td>
+<td>Which BSL to write Kopia repository data to.</td>
+</tr>
+<tr>
+<td><code>spec.dataMover</code></td>
+<td><code>string</code></td>
+<td>Pluggable data mover identifier. Default <code>"velero"</code> → Kopia.</td>
+</tr>
+<tr>
+<td><code>spec.operationTimeout</code></td>
+<td><code>duration</code></td>
+<td>How long before failing the upload. Tune for large PVCs.</td>
+</tr>
+<tr>
+<td><code>spec.cancel</code></td>
+<td><code>bool</code></td>
+<td>Set to <code>true</code> to cancel an in-progress upload.</td>
+</tr>
+<tr>
+<td><code>status.phase</code></td>
+<td><code>enum</code></td>
+<td><code>New → Accepted → Prepared → InProgress → Completed/Failed/Canceled</code></td>
+</tr>
+<tr>
+<td><code>status.snapshotID</code></td>
+<td><code>string</code></td>
+<td>Kopia snapshot ID on success. Used by DataDownload to restore.</td>
+</tr>
+<tr>
+<td><code>status.node</code></td>
+<td><code>string</code></td>
+<td>Node where the data mover pod ran.</td>
+</tr>
+<tr>
+<td><code>status.progress</code></td>
+<td><code>Progress</code></td>
+<td><code>BytesDone / TotalBytes</code>: live progress from the Kopia upload stream.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="datadownload-v2alpha1">DataDownload (<em>v2alpha1</em>)<a class="headerlink" href="#datadownload-v2alpha1" title="Permanent link">&para;</a></h2>
+<p>Mirror of DataUpload for the restore path. Created by CSI restore actions; 
+reconciled by <code>DataDownloadController</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec.targetVolume</code></td>
+<td><code>object</code></td>
+<td>Target PVC, PV, and namespace for restored data.</td>
+</tr>
+<tr>
+<td><code>spec.snapshotID</code></td>
+<td><code>string</code></td>
+<td>Kopia snapshot ID to restore from.</td>
+</tr>
+<tr>
+<td><code>spec.dataMover</code></td>
+<td><code>string</code></td>
+<td>Pluggable data mover identifier.</td>
+</tr>
+<tr>
+<td><code>spec.operationTimeout</code></td>
+<td><code>duration</code></td>
+<td>Timeout for the download operation.</td>
+</tr>
+<tr>
+<td><code>status.phase</code></td>
+<td><code>enum</code></td>
+<td>Mirrors DataUpload phases.</td>
+</tr>
+<tr>
+<td><code>status.node</code></td>
+<td><code>string</code></td>
+<td>Node where the restore mover pod ran.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Alpha API</p>
+<p>DataUpload and DataDownload are <code>v2alpha1</code> — field changes may occur 
+between minor Velero versions. Existing CRs in clusters may need manual 
+cleanup after upgrades.</p>
+</div>
+<h2 id="crd-relationship-map">CRD Relationship Map<a class="headerlink" href="#crd-relationship-map" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Schedule ---creates--&gt; Backup
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>                         |
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>                         ├── references BackupStorageLocation
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>                         ├── references VolumeSnapshotLocation
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>                         ├── triggers PodVolumeBackup (one per volume, legacy)
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>                         ├── triggers DataUpload (one per volume, CSI path)
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>                         └── has DownloadRequest (logs, contents)
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>Restore ---references--&gt; Backup (or Schedule for latest)
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    |
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    ├── triggers PodVolumeRestore (one per volume, legacy)
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    └── triggers DataDownload (one per volume, CSI path)
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>BackupRepository ---references--&gt; BackupStorageLocation
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    (used by PodVolumeBackup/Restore and DataUpload/Download)
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>DeleteBackupRequest ---targets--&gt; Backup
+</span></code></pre></div>
+<h2 id="next-up">Next Up<a class="headerlink" href="#next-up" title="Permanent link">&para;</a></h2>
+<p><a href="../../internals/backup/">Backup Mechanics</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026&ndash;present Volkan Özçelik.<br>
+The content on this website is distributed under
+<a href="https://creativecommons.org/licenses/by/4.0/deed.en"><strong>CC-BY-4.0</strong></a>.
+
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../../../..","features":["announce.dismiss","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.expand","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.sections","navigation.top","navigation.tracking","search.highlight"],"search":"../../../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.91a19a9e.min.js"></script>
+      
+    
+  </body>
+</html>

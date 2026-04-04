@@ -1,0 +1,1016 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="all your things are belong to us!">
+      
+      
+        <meta name="author" content="Volkan Özçelik <me@volkan.io>">
+      
+      
+        <link rel="canonical" href="https://things.wtf/k8s/headlamp/architecture/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.31">
+    
+    
+      
+        <title>Architecture - things: wtf?</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../../assets/stylesheets/modern/main.53a7feaf.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-label="Navigation"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="things: wtf?" class="md-header__button md-logo" aria-label="things: wtf?" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            things: wtf?
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/zerotohero-dev/things-wtf" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    things-wtf
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="things: wtf?" class="md-nav__button md-logo" aria-label="things: wtf?" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+
+    </a>
+    things: wtf?
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zerotohero-dev/things-wtf" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    things-wtf
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WTF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../volkan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About Me
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../things/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../velero/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Velero
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Headlamp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#websocket-multiplexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket multiplexing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plugin-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plugin loading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-architecture-code-intelligence-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Architecture (Code Intelligence Analysis)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain Architecture (Code Intelligence Analysis)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-clean-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Clean Boundaries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-9-clusters-not-one-thing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: 9+ Clusters, Not "One Thing"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#electron-three-concerns-not-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Electron: Three Concerns, Not One
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#critical-hotspots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical Hotspots
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boundary-violations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Violations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+  
+
+
+<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Headlamp has three runtime layers: the Go backend (<code>headlamp-server</code>), the React SPA (frontend), and an optional Electron shell for the desktop app. They compose differently in each deployment mode but the request lifecycle is the same.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────┐
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│  Browser (React SPA + loaded plugins)                           │
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>└───────────────────────────────┬─────────────────────────────────┘
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                │ HTTP / WebSocket
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                ▼
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>┌─────────────────────────────────────────────────────────────────┐
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  headlamp-server (Go)                                           │
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  │ Cluster      │  │ Plugin       │  │ Helm API +           │  │
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│  │ proxy        │  │ serving      │  │ /serviceproxy        │  │
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│  └──────┬───────┘  └──────────────┘  └──────────┬───────────┘  │
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>└─────────┼───────────────────────────────────────┼──────────────┘
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>          │ kube-apiserver API                     │ in-cluster svc
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>          ▼                                        ▼
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>   Kubernetes API                           Service (Helm repo,
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>   (REST + Watch)                           catalog, etc.)
+</span></code></pre></div>
+<h2 id="request-lifecycle">Request lifecycle<a class="headerlink" href="#request-lifecycle" title="Permanent link">&para;</a></h2>
+<p>Every user action in the UI travels the same path:</p>
+<ol>
+<li><strong>Browser</strong> initiates an HTTP or WebSocket request to <code>headlamp-server</code> (never directly to the cluster)</li>
+<li><code>headlamp-server</code> authenticates the request using the current token or OIDC session</li>
+<li>The request is forwarded to the appropriate <strong>cluster proxy</strong>, which holds the actual cluster credentials</li>
+<li>The Kubernetes API responds; the proxy returns the result to the browser</li>
+</ol>
+<p>For <strong>service proxy</strong> requests (in-cluster services):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Browser → headlamp-server /serviceproxy/{ns}/{svc}/{path} → ClusterIP service
+</span></code></pre></div>
+<p>For <strong>plugin assets</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Browser → headlamp-server /plugins/{name}/main.js → static file from plugins dir
+</span></code></pre></div>
+<h2 id="websocket-multiplexing">WebSocket multiplexing<a class="headerlink" href="#websocket-multiplexing" title="Permanent link">&para;</a></h2>
+<p>Browsers cap concurrent WebSocket connections at approximately 6. Headlamp solves this with a <strong>multiplexer</strong>:</p>
+<ul>
+<li><strong>One</strong> WebSocket from the browser to <code>headlamp-server</code></li>
+<li><code>headlamp-server</code> fans out to <strong>many</strong> Watch connections against the Kubernetes API servers</li>
+</ul>
+<p>This enables real-time updates across dozens of resource types simultaneously. The multiplexer logic lives in <code>backend/pkg/</code> and the frontend connects through a single shared channel rather than opening per-resource WebSockets.</p>
+<h2 id="plugin-loading">Plugin loading<a class="headerlink" href="#plugin-loading" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>headlamp-server startup
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  └── scan plugins dir (~/.config/Headlamp/plugins/ by default)
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        └── for each subdir with main.js:
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>              serve at /plugins/{name}/main.js
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Browser startup
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  └── fetch plugin list from /plugins/
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        └── for each plugin:
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>              fetch /plugins/{name}/main.js
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>              execute in global JS context
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>              plugin calls registerXxx() functions
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>              registry takes effect immediately
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">No sandboxing</p>
+<p>Plugins run in the full application JavaScript context. They have access to the same React tree, Redux store, and shared dependencies as the core app. This is intentional — it enables deep integration — but means a poorly written plugin can affect the whole UI.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Shared dependencies</p>
+<p>React, Redux, MUI, React Router, Lodash, Monaco Editor, Iconify, and Notistack are provided by the host and automatically externalized by the plugin build toolchain. Do not bundle these in your plugin.</p>
+</div>
+<h2 id="deployment-modes">Deployment modes<a class="headerlink" href="#deployment-modes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Who runs headlamp-server</th>
+<th>Plugin dir</th>
+<th>kubeconfig source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>In-cluster</strong></td>
+<td>Kubernetes pod</td>
+<td><code>/headlamp/plugins/</code> (or mounted volume)</td>
+<td>In-cluster service account</td>
+</tr>
+<tr>
+<td><strong>Desktop</strong></td>
+<td>Electron child process</td>
+<td><code>~/.config/Headlamp/plugins/</code></td>
+<td><code>~/.kube/config</code></td>
+</tr>
+<tr>
+<td><strong>Local dev</strong></td>
+<td><code>npm run backend:start</code></td>
+<td><code>~/.config/Headlamp/plugins/</code></td>
+<td><code>~/.kube/config</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-model">Security model<a class="headerlink" href="#security-model" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The browser <strong>never</strong> receives cluster credentials directly</li>
+<li>All cluster API calls are proxied through <code>headlamp-server</code>, which holds the token or mounts the service account</li>
+<li>RBAC is enforced cluster-side — Headlamp adapts the UI based on what the current token can do (e.g. no Edit button if the user lacks <code>update</code> permission on that resource)</li>
+<li>The service proxy requires an authenticated session; requests without a valid token are rejected before forwarding</li>
+</ul>
+<hr />
+<h2 id="domain-architecture-code-intelligence-analysis">Domain Architecture (Code Intelligence Analysis)<a class="headerlink" href="#domain-architecture-code-intelligence-analysis" title="Permanent link">&para;</a></h2>
+<p>Call-graph analysis of the codebase (12,547 symbols, 25,929 relationships) reveals internal structure that the official documentation obscures. The manual architecture describes 6 domains; static analysis finds <strong>59 distinct clusters</strong>.</p>
+<h3 id="backend-clean-boundaries">Backend: Clean Boundaries<a class="headerlink" href="#backend-clean-boundaries" title="Permanent link">&para;</a></h3>
+<p>The Go backend aligns well with its package structure. Each cluster maps to a distinct concern:</p>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Symbols</th>
+<th>Cohesion</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cmd</strong></td>
+<td>335</td>
+<td>—</td>
+<td>Server entry point, route registration, the 540-line <code>createHeadlampHandler()</code></td>
+</tr>
+<tr>
+<td><strong>Helm</strong></td>
+<td>55</td>
+<td>—</td>
+<td>Helm SDK operations, release management, repository handling</td>
+</tr>
+<tr>
+<td><strong>Kubeconfig</strong></td>
+<td>55</td>
+<td>—</td>
+<td>Multi-cluster kubeconfig parsing and management</td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td>48</td>
+<td>—</td>
+<td>OIDC flow, token extraction, cookie chunking</td>
+</tr>
+<tr>
+<td><strong>Stateless</strong></td>
+<td>41</td>
+<td>—</td>
+<td>Dynamic cluster add/remove with TTL-based caching</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hidden coupling</strong>: The service proxy (<code>backend/pkg/serviceproxy/</code>) has its own Go package boundary, but the graph absorbs it into the Cmd cluster because <code>createHeadlampHandler()</code> tightly couples route registration with handler creation. The package boundary is cosmetic — the real dependency flows through the 540-line handler constructor.</p>
+<h3 id="frontend-9-clusters-not-one-thing">Frontend: 9+ Clusters, Not "One Thing"<a class="headerlink" href="#frontend-9-clusters-not-one-thing" title="Permanent link">&para;</a></h3>
+<p>The official architecture describes "the frontend" as one layer. The graph tells a different story:</p>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Symbols</th>
+<th>Cohesion</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Resource</strong></td>
+<td>388</td>
+<td>—</td>
+<td>K8s resource view components (<strong>largest cluster in the codebase</strong>)</td>
+</tr>
+<tr>
+<td><strong>K8s</strong></td>
+<td>218</td>
+<td>—</td>
+<td>K8s API client library (typed wrappers, hooks)</td>
+</tr>
+<tr>
+<td><strong>V1</strong></td>
+<td>61</td>
+<td>53%</td>
+<td>Legacy API layer (low cohesion = transitional, being replaced)</td>
+</tr>
+<tr>
+<td><strong>V2</strong></td>
+<td>29</td>
+<td>71%</td>
+<td>New API layer (higher cohesion = cleaner design)</td>
+</tr>
+<tr>
+<td><strong>Settings</strong></td>
+<td>42</td>
+<td>—</td>
+<td>Settings UI and configuration</td>
+</tr>
+<tr>
+<td><strong>Plugin</strong></td>
+<td>46</td>
+<td>—</td>
+<td>Plugin loader and registry</td>
+</tr>
+<tr>
+<td><strong>Graph</strong></td>
+<td>30</td>
+<td>—</td>
+<td>Visualization components</td>
+</tr>
+<tr>
+<td><strong>Node</strong></td>
+<td>29</td>
+<td>—</td>
+<td>Node-specific views</td>
+</tr>
+<tr>
+<td><strong>Pod</strong></td>
+<td>27</td>
+<td>—</td>
+<td>Pod-specific views</td>
+</tr>
+<tr>
+<td><strong>App</strong></td>
+<td>27</td>
+<td>—</td>
+<td>Application-level components</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>Resource cluster (388 symbols)</strong> is the largest and least cohesive — it's the "everything else" of the frontend. The <strong>V1→V2 migration</strong> is visible in the data: V1 has notably low cohesion (53%), suggesting it's a transitional layer being replaced by V2 (71% cohesion).</p>
+<h3 id="electron-three-concerns-not-one">Electron: Three Concerns, Not One<a class="headerlink" href="#electron-three-concerns-not-one" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Symbols</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Electron</strong></td>
+<td>84</td>
+<td>Core desktop app lifecycle, window management</td>
+</tr>
+<tr>
+<td><strong>Mcp</strong></td>
+<td>42</td>
+<td>MCP client integration (AI assistant) — <strong>its own domain</strong></td>
+</tr>
+<tr>
+<td><strong>Commands</strong></td>
+<td>28</td>
+<td>Command execution subsystem (<code>runCommand()</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>MCP is architecturally separate from Electron core. It has its own client, protocol handling, and IPC bridge. This matters because MCP is currently desktop-only — bringing it to in-cluster mode means extracting the Mcp cluster from its Electron dependency.</p>
+<h3 id="critical-hotspots">Critical Hotspots<a class="headerlink" href="#critical-hotspots" title="Permanent link">&para;</a></h3>
+<p>These symbols have the widest blast radius in the codebase. Changes here require the most careful review:</p>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>d=1 Callers</th>
+<th>Execution Flows</th>
+<th>Modules Affected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>createRouteURL</code></td>
+<td>26</td>
+<td>20</td>
+<td>8 modules — <strong>CRITICAL</strong></td>
+</tr>
+<tr>
+<td><code>createHeadlampHandler</code></td>
+<td>all backend routes</td>
+<td>all backend flows</td>
+<td>entire backend</td>
+</tr>
+<tr>
+<td><code>fetchAndExecutePlugins</code></td>
+<td>1</td>
+<td>4</td>
+<td>plugin loading pipeline</td>
+</tr>
+<tr>
+<td><code>registerSidebarEntry</code></td>
+<td>1 in-repo (many external)</td>
+<td>all plugin flows</td>
+<td>all plugins</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boundary-violations">Boundary Violations<a class="headerlink" href="#boundary-violations" title="Permanent link">&para;</a></h3>
+<p><strong>Serviceproxy → Cmd absorption</strong>: The service proxy package has its own Go package, but <code>RequestHandler</code> is registered as a route handler inside <code>createHeadlampHandler()</code>, making it structurally part of the server. Changes to service proxy behavior require understanding the Cmd cluster context.</p>
+<p><strong>Plugin SDK → Frontend coupling</strong>: The plugin SDK (<code>plugins/headlamp-plugin/</code>) copies files from <code>frontend/src/</code> into <code>lib/</code>. Every internal frontend refactor is a potential breaking change for the SDK. There is no versioned API boundary.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026&ndash;present Volkan Özçelik.<br>
+The content on this website is distributed under
+<a href="https://creativecommons.org/licenses/by/4.0/deed.en"><strong>CC-BY-4.0</strong></a>.
+
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../../..","features":["announce.dismiss","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.expand","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.sections","navigation.top","navigation.tracking","search.highlight"],"search":"../../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.91a19a9e.min.js"></script>
+      
+    
+  </body>
+</html>

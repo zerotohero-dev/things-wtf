@@ -1,0 +1,51 @@
+# ============================================================================
+# Internal site configuration
+#
+# This builds docs-internal/ → site-internal/ for local browsing only.
+# NEVER deploy this site publicly.
+# ============================================================================
+
+[project]
+site_name = "Internal Wiki"
+site_description = "Internal documentation — not for publication."
+site_author = "<your name here>"
+docs_dir = "docs-internal"
+site_dir = "site-internal"
+
+copyright = """
+INTERNAL — NOT FOR PUBLICATION
+"""
+
+[project.theme]
+language = "en"
+
+features = [
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.footnote.tooltips",
+    "content.tabs.link",
+    "content.tooltips",
+    "navigation.footer",
+    "navigation.indexes",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.path",
+    "navigation.sections",
+    "navigation.top",
+    "navigation.tracking",
+    "search.highlight",
+]
+
+# Amber accent to visually distinguish from the public site
+[[project.theme.palette]]
+scheme = "default"
+primary = "amber"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "amber"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"

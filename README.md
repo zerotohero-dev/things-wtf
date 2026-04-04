@@ -1,2 +1,2 @@
 # things-wtf
-Things? WTF?
+things.wtf
