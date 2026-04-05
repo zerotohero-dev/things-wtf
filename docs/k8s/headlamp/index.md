@@ -10,13 +10,13 @@ What distinguishes it from alternatives like Lens or the vanilla Kubernetes Dash
 
 ## Key design principles
 
-| Principle | Description |
-|---|---|
-| **Extensibility first** | Any UI customization should be achievable via a plugin |
-| **RBAC-adaptive UI** | Action buttons appear only when the user's role permits them |
-| **Multi-cluster** | One Headlamp instance can manage N clusters simultaneously |
-| **Real-time** | Kubernetes watch events flow through a WebSocket multiplexer |
-| **Security** | The browser never holds cluster credentials directly; all requests proxy through `headlamp-server` |
+| Principle               | Description                                                                                        |
+|-------------------------|----------------------------------------------------------------------------------------------------|
+| **Extensibility first** | Any UI customization should be achievable via a plugin                                             |
+| **RBAC-adaptive UI**    | Action buttons appear only when the user's role permits them                                       |
+| **Multi-cluster**       | One Headlamp instance can manage N clusters simultaneously                                         |
+| **Real-time**           | Kubernetes watch events flow through a WebSocket multiplexer                                       |
+| **Security**            | The browser never holds cluster credentials directly; all requests proxy through `headlamp-server` |
 
 ## Three runtime layers
 
@@ -60,29 +60,26 @@ kubectl port-forward -n kube-system service/headlamp 8080:80
 
 ### Understand
 
-| Section | Audience |
-|---|---|
-| [Architecture](architecture.md) | Anyone — system design, domain clustering, hotspots |
-| [Source Layout](source-layout.md) | Contributors, anyone reading the code |
-| [Technical Debt & Danger Zones](../../../docs-internal/headlamp/technical-debt.md) | Architects, tech leads — the honest inventory |
-| [Production Readiness](../../../docs-internal/headlamp/production-readiness.md) | Platform engineers — what works, what breaks at scale |
+| Section                           | Audience                                            |
+|-----------------------------------|-----------------------------------------------------|
+| [Architecture](architecture.md)   | Anyone — system design, domain clustering, hotspots |
+| [Source Layout](source-layout.md) | Contributors, anyone reading the code               |
 
 ### Deploy
 
-| Section | Audience |
-|---|---|
-| [Deploy on kind](kind-cluster.md) | Engineers evaluating or testing in-cluster features |
-| [VKS Deployment Guide](../../../docs-internal/headlamp/vks-deployment.md) | VKS platform engineers — the complete production guide |
-| [Authentication](authentication.md) | Platform engineers deploying for a team |
-| [--enable-helm](enable-helm.md) | Anyone using App Catalog or Helm-aware features |
-| [Service Proxy](service-proxy.md) | Plugin authors, App Catalog users |
-| [App Catalog](app-catalog.md) | Platform engineers — includes silent failure analysis |
-| [Server Flags](server-flags.md) | Quick reference, bookmark this |
+| Section                                                                   | Audience                                               |
+|---------------------------------------------------------------------------|--------------------------------------------------------|
+| [Deploy on kind](kind-cluster.md)                                         | Engineers evaluating or testing in-cluster features    |
+| [Authentication](authentication.md)                                       | Platform engineers deploying for a team                |
+| [--enable-helm](enable-helm.md)                                           | Anyone using App Catalog or Helm-aware features        |
+| [Service Proxy](service-proxy.md)                                         | Plugin authors, App Catalog users                      |
+| [App Catalog](app-catalog.md)                                             | Platform engineers — includes silent failure analysis  |
+| [Server Flags](server-flags.md)                                           | Quick reference, bookmark this                         |
 
 ### Extend
 
-| Section | Audience |
-|---|---|
+| Section                                   | Audience                                |
+|-------------------------------------------|-----------------------------------------|
 | [Plugin Development](plugins/concepts.md) | Engineers building custom UI extensions |
-| [Local Development](local-dev.md) | Contributors |
-| [Contributing](contributing.md) | OSS contributors |
+| [Local Development](local-dev.md)         | Contributors                            |
+| [Contributing](contributing.md)           | OSS contributors                        |
