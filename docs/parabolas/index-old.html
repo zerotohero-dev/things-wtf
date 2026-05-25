@@ -669,7 +669,6 @@ footer {
         <li><a href="#disc">Discriminant</a></li>
         <li><a href="#vertex">Vertex</a></li>
         <li><a href="#transform">Transformations</a></li>
-        <li><a href="#width">Width knob</a></li>
         <li><a href="#orient">Sideways &amp; tilted</a></li>
         <li><a href="#lab">Lab</a></li>
         <li><a href="#worked">Worked examples</a></li>
@@ -1845,200 +1844,11 @@ footer {
 </section>
 
 <!-- =====================================================================
-     §11 — THE WIDTH KNOB
-===================================================================== -->
-<section id="width">
-  <div class="container">
-    <h2><span class="num">§11</span>The width knob — pulling on <span class="va">a</span> alone</h2>
-
-    <p class="lede">
-      You've seen all three coefficients tug on the parabola together
-      in the main lab. Now let's freeze two of them and pull on just
-      one — the leading coefficient <span class="va">a</span> — to
-      see how far the parabola can stretch and squash. At its limits,
-      it stops looking like a parabola at all.
-    </p>
-
-    <h3>What <span class="va">a</span> does, in isolation</h3>
-
-    <p>
-      Take the simplest possible quadratic: $y = $<span class="va">a</span>$x^2$,
-      with <span class="vb">b</span> $= 0$ and <span class="vc">c</span> $= 0$.
-      The vertex sits at the origin, the axis of symmetry is the
-      y-axis, and the only thing that can change about this parabola
-      is its <strong>width</strong> — plus which way it opens. One
-      knob, full control.
-    </p>
-
-    <p>
-      Bigger $|$<span class="va">a</span>$|$ → the parabola climbs
-      <em>faster</em> for the same step in $x$, so it looks narrower
-      and steeper. Smaller $|$<span class="va">a</span>$|$ → it climbs
-      <em>slower</em>, so it looks wider and shallower. Flip the
-      <em>sign</em> of <span class="va">a</span> and the whole thing
-      mirrors across the x-axis.
-    </p>
-
-    <p>
-      That sounds tame in a textbook. It's much more interesting at
-      the boundaries — where the parabola starts approaching shapes
-      it isn't supposed to be.
-    </p>
-
-    <h3>The two limits</h3>
-
-    <p>
-      Pulling <span class="va">a</span> to its extremes reveals
-      something important about what a parabola actually <em>is</em>.
-    </p>
-
-    <div class="card-grid">
-      <div class="card">
-        <h4 style="color: var(--c-a);">|<span class="va">a</span>| → ∞</h4>
-        <p style="margin-top: 0.5em;">
-          The parabola pinches inward. As <span class="va">a</span>
-          gets larger and larger, the curve climbs so steeply that
-          it's almost vertical right next to the y-axis. In the
-          limit, the visible shape becomes a <strong>vertical
-          spike</strong> — a near-line shooting up from the origin.
-        </p>
-        <p style="margin: 0; color: var(--paper-soft); font-size: 0.9em; font-style: italic;">
-          The parabola hasn't actually become a line — it's still
-          a curve, with every point doing parabola-things. It just
-          fits inside a thinner and thinner slice of the plane.
-        </p>
-      </div>
-
-      <div class="card">
-        <h4 style="color: var(--c-curve);">|<span class="va">a</span>| → 0</h4>
-        <p style="margin-top: 0.5em;">
-          The parabola flattens. As <span class="va">a</span> shrinks
-          toward zero, the curve climbs more and more slowly, until
-          across the visible window it looks almost <strong>flat</strong>.
-          At exactly <span class="va">a</span> $= 0$, the equation
-          becomes $y = 0$ — a horizontal line, the x-axis itself.
-        </p>
-        <p style="margin: 0; color: var(--paper-soft); font-size: 0.9em; font-style: italic;">
-          Here the parabola really does stop existing. The
-          second-degree term vanishes and we're left with no curve
-          at all.
-        </p>
-      </div>
-    </div>
-
-    <h3>Try it — drag <span class="va">a</span></h3>
-
-    <p>
-      Slide <span class="va">a</span> from the negative extreme through
-      zero to the positive extreme. The dashed faint curve is the
-      "standard" parabola $y = x^2$ (where <span class="va">a</span> $= 1$),
-      always shown for comparison. Watch what happens at the boundaries.
-    </p>
-
-    <div class="lab">
-      <div class="lab-grid">
-        <div>
-          <svg id="wkn-plot" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-            <g id="wkn-grid"></g>
-            <line x1="0" y1="250" x2="500" y2="250" stroke="#3a4151" stroke-width="1.2"/>
-            <line x1="250" y1="0" x2="250" y2="500" stroke="#3a4151" stroke-width="1.2"/>
-            <text x="490" y="245" fill="#7c7869" font-size="11" font-family="JetBrains Mono" text-anchor="end">x</text>
-            <text x="256" y="14" fill="#7c7869" font-size="11" font-family="JetBrains Mono">y</text>
-            <!-- Reference: y = x^2, dashed faint -->
-            <path id="wkn-ghost" d="" fill="none" stroke="#94d9a5" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
-            <!-- The live curve -->
-            <path id="wkn-curve" d="" fill="none" stroke="#94d9a5" stroke-width="2.5"/>
-            <!-- Vertex marker (always at origin in this widget) -->
-            <circle cx="250" cy="250" r="4" fill="#d978c8"/>
-          </svg>
-        </div>
-
-        <div>
-          <div class="slider-row">
-            <label class="va">a</label>
-            <input type="range" id="slider-width" class="slider-a" min="-8" max="8" step="0.05" value="1">
-            <span class="val" id="val-width">1.00</span>
-          </div>
-          <p style="font-size: 0.85em; color: var(--paper-faint); margin-top: -0.5em;">
-            (range −8 to +8, but watch closely near 0)
-          </p>
-
-          <p style="font-family: var(--font-mono); font-size: 12px; color: var(--paper-faint); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 2em;">Current equation</p>
-          <div class="eq-display" style="margin: 0.4em 0; font-size: 1.1em; text-align: center;">
-            <span id="r-wkn-eq">y = x²</span>
-          </div>
-
-          <div class="readout">
-            <div class="row">
-              <span><dt>shape</dt></span>
-              <span><dd id="r-wkn-shape" style="color: var(--paper);">standard parabola</dd></span>
-            </div>
-            <div class="row">
-              <span><dt>direction</dt></span>
-              <span><dd id="r-wkn-dir">opens up</dd></span>
-            </div>
-            <div class="row">
-              <span><dt>vs. y = x²</dt></span>
-              <span><dd id="r-wkn-vs">identical</dd></span>
-            </div>
-            <div class="row">
-              <span><dt>height at x = 1</dt></span>
-              <span><dd id="r-wkn-h1">y = 1.00</dd></span>
-            </div>
-          </div>
-
-          <p style="font-size: 0.9em; color: var(--paper-soft); margin-top: 1.5em;">
-            <strong>Try:</strong> drag <span class="va">a</span> to
-            $0$ — the curve becomes the x-axis. Drag it to $\pm 0.05$
-            — almost flat. Drag it to $\pm 8$ — a near-vertical
-            spike. The same equation drew every one of these.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout aside">
-      <h4>WHY a = 0 IS BANNED, REVISITED</h4>
-      <p>
-        Way back in §02 we said "<span class="va">a</span> can't be
-        zero, or it's not a quadratic." Now you can see why visually.
-        At <span class="va">a</span> $= 0$, the $x^2$ term vanishes,
-        the curve collapses into a straight horizontal line, and the
-        whole machinery we've built — vertex, discriminant, axis of
-        symmetry, two roots — stops applying. A horizontal line is a
-        perfectly fine graph; it just isn't a parabola. The
-        restriction isn't arbitrary, it's the math being honest about
-        where its structure comes from.
-      </p>
-    </div>
-
-    <div class="callout tip">
-      <h4>THE NUMBER a IS A "STRETCH FACTOR"</h4>
-      <p>
-        Here's a useful way to think about <span class="va">a</span>:
-        for any point $(x, y)$ on the reference curve $y = x^2$, the
-        corresponding point on $y = $<span class="va">a</span>$x^2$
-        has the same $x$ but the y-coordinate multiplied by
-        <span class="va">a</span>. So <span class="va">a</span> $= 3$
-        stretches every height by a factor of $3$ (the curve is $3$
-        times taller everywhere → looks narrower).
-        <span class="va">a</span> $= 0.25$ shrinks every height to a
-        quarter (the curve is $4$ times shorter everywhere → looks
-        wider). And <span class="va">a</span> $= -1$ flips every
-        height to its negative (upside-down mirror). The "width"
-        change is really a height change — the parabola hasn't gotten
-        wider, it's gotten shorter, so it looks like it spreads more.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- =====================================================================
-     §12 — SIDEWAYS AND TILTED
+     §11 — SIDEWAYS AND TILTED
 ===================================================================== -->
 <section id="orient">
   <div class="container">
-    <h2><span class="num">§12</span>Sideways &amp; tilted — when parabolas turn</h2>
+    <h2><span class="num">§11</span>Sideways &amp; tilted — when parabolas turn</h2>
 
     <p class="lede">
       Every parabola we've drawn so far opens up or down. That's a
@@ -2296,11 +2106,11 @@ footer {
 </section>
 
 <!-- =====================================================================
-     §13 — INTERACTIVE LAB
+     §12 — INTERACTIVE LAB
 ===================================================================== -->
 <section id="lab">
   <div class="container">
-    <h2><span class="num">§13</span>The parabola lab</h2>
+    <h2><span class="num">§12</span>The parabola lab</h2>
 
     <p>
       Slide the knobs and watch the parabola change. Every value in the
@@ -2391,11 +2201,11 @@ footer {
 </section>
 
 <!-- =====================================================================
-     §14 — WORKED EXAMPLES
+     §13 — WORKED EXAMPLES
 ===================================================================== -->
 <section id="worked">
   <div class="container">
-    <h2><span class="num">§14</span>Three worked examples, end to end</h2>
+    <h2><span class="num">§13</span>Three worked examples, end to end</h2>
 
     <p>
       Each example below is solved fully, with every step labeled. The
@@ -2584,11 +2394,11 @@ footer {
 </section>
 
 <!-- =====================================================================
-     §15 — PRACTICE
+     §14 — PRACTICE
 ===================================================================== -->
 <section id="practice">
   <div class="container">
-    <h2><span class="num">§15</span>Practice — try, then peek</h2>
+    <h2><span class="num">§14</span>Practice — try, then peek</h2>
 
     <p>
       Each problem below has a hidden solution. Try it first; then tap
@@ -2673,11 +2483,11 @@ footer {
 </section>
 
 <!-- =====================================================================
-     §16 — REAL WORLD
+     §15 — REAL WORLD
 ===================================================================== -->
 <section id="world">
   <div class="container">
-    <h2><span class="num">§16</span>Where these show up in real life</h2>
+    <h2><span class="num">§15</span>Where these show up in real life</h2>
 
     <div class="card-grid">
       <div class="card">
@@ -2743,11 +2553,11 @@ footer {
 </section>
 
 <!-- =====================================================================
-     §17 — CHEAT SHEET
+     §16 — CHEAT SHEET
 ===================================================================== -->
 <section id="cheat">
   <div class="container">
-    <h2><span class="num">§17</span>The whole page on one card</h2>
+    <h2><span class="num">§16</span>The whole page on one card</h2>
 
     <p>
       If you remember nothing else, remember this. Print it, screenshot
@@ -3109,150 +2919,7 @@ footer {
 
 
 /* =====================================================================
-   WIDTH-KNOB WIDGET (§11)
-===================================================================== */
-(function () {
-  const SVG_SIZE = 500;
-  const CX = 250, CY = 250;
-  const SCALE = 32;                  // pixels per math unit
-  const Y_VISIBLE = 7.5;             // top of plot is y = +7.5 (math units)
-
-  const slider = document.getElementById('slider-width');
-  const valW   = document.getElementById('val-width');
-  const curve  = document.getElementById('wkn-curve');
-  const ghost  = document.getElementById('wkn-ghost');
-  const rEq    = document.getElementById('r-wkn-eq');
-  const rShape = document.getElementById('r-wkn-shape');
-  const rDir   = document.getElementById('r-wkn-dir');
-  const rVs    = document.getElementById('r-wkn-vs');
-  const rH1    = document.getElementById('r-wkn-h1');
-
-  // Grid
-  const grid = document.getElementById('wkn-grid');
-  for (let i = -7; i <= 7; i++) {
-    if (i === 0) continue;
-    const xPx = CX + i * SCALE;
-    const yPx = CY - i * SCALE;
-    const v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    v.setAttribute('x1', xPx); v.setAttribute('x2', xPx);
-    v.setAttribute('y1', 0); v.setAttribute('y2', SVG_SIZE);
-    v.setAttribute('stroke', '#1c2029'); v.setAttribute('stroke-width', '0.6');
-    grid.appendChild(v);
-    const h = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    h.setAttribute('y1', yPx); h.setAttribute('y2', yPx);
-    h.setAttribute('x1', 0); h.setAttribute('x2', SVG_SIZE);
-    h.setAttribute('stroke', '#1c2029'); h.setAttribute('stroke-width', '0.6');
-    grid.appendChild(h);
-  }
-
-  // Build the ghost (reference) y = x², once.
-  // y = x² hits y = 7.5 at x = √7.5 ≈ 2.74, so plot in that range.
-  {
-    let dg = '';
-    const xMax = Math.sqrt(Y_VISIBLE);
-    const step = (2 * xMax) / 120;
-    for (let i = 0; i <= 120; i++) {
-      const x = -xMax + i * step;
-      const y = x * x;
-      const xPx = CX + x * SCALE;
-      const yPx = CY - y * SCALE;
-      dg += (i === 0 ? 'M ' : 'L ') + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' ';
-    }
-    ghost.setAttribute('d', dg);
-  }
-
-  function plotCurve(a) {
-    // Adaptive x range: choose x so that the curve fits vertically.
-    // For y = a x², |y| = Y_VISIBLE when |x| = √(Y_VISIBLE / |a|).
-    // If a is essentially zero, the curve IS the x-axis.
-    if (Math.abs(a) < 0.005) {
-      // Draw the x-axis (horizontal line)
-      curve.setAttribute('d', 'M 0 ' + CY + ' L ' + SVG_SIZE + ' ' + CY);
-      return;
-    }
-
-    let xMax = Math.sqrt(Y_VISIBLE / Math.abs(a));
-    // But never extend beyond the plot's horizontal window
-    const X_LIMIT = (SVG_SIZE / 2) / SCALE;   // ≈ 7.81
-    if (xMax > X_LIMIT) xMax = X_LIMIT;
-
-    let d = '';
-    const segments = 200;
-    const step = (2 * xMax) / segments;
-    for (let i = 0; i <= segments; i++) {
-      const x = -xMax + i * step;
-      const y = a * x * x;
-      const xPx = CX + x * SCALE;
-      const yPx = CY - y * SCALE;
-      d += (i === 0 ? 'M ' : 'L ') + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' ';
-    }
-    curve.setAttribute('d', d);
-  }
-
-  function describeShape(a) {
-    const m = Math.abs(a);
-    if (m < 0.005)  return 'horizontal line (not a parabola)';
-    if (m < 0.05)   return 'extremely wide — almost flat';
-    if (m < 0.2)    return 'very wide';
-    if (m < 0.5)    return 'wide';
-    if (m < 0.95)   return 'a bit wider than standard';
-    if (m < 1.05)   return 'standard parabola';
-    if (m < 2)      return 'a bit narrower than standard';
-    if (m < 4)      return 'narrow';
-    if (m < 6)      return 'very narrow';
-                    return 'extremely narrow — almost a spike';
-  }
-
-  function describeVs(a) {
-    const m = Math.abs(a);
-    if (m < 0.005)  return 'no parabola';
-    if (m < 1)      return (1/m).toFixed(1) + '× wider';
-    if (m < 1.005)  return 'identical';
-                    return m.toFixed(1) + '× narrower';
-  }
-
-  function fmtA(a) {
-    if (Math.abs(a) < 0.005) return '0';
-    if (Math.abs(a - 1) < 0.005) return '';     // omit for "y = x²"
-    if (Math.abs(a + 1) < 0.005) return '−';    // for "y = −x²"
-    return a.toFixed(2);
-  }
-
-  function update() {
-    const a = parseFloat(slider.value);
-    valW.textContent = a.toFixed(2);
-
-    plotCurve(a);
-
-    // Equation
-    if (Math.abs(a) < 0.005) {
-      rEq.innerHTML = '<span style="color:var(--paper-soft);">y = 0</span>  <span style="color:var(--paper-faint); font-style: italic;">(the x-axis)</span>';
-    } else {
-      const aStr = fmtA(a);
-      const coefHTML = aStr === '' ? '' :
-                       aStr === '−' ? '<span style="color:var(--c-a);">−</span>' :
-                       '<span style="color:var(--c-a);">' + aStr + '</span>';
-      rEq.innerHTML = 'y = ' + coefHTML + 'x²';
-    }
-
-    // Shape, direction, comparison, height at x = 1
-    rShape.textContent = describeShape(a);
-    rDir.innerHTML =
-      Math.abs(a) < 0.005 ? '<span style="color:var(--paper-faint);">— (no opening)</span>' :
-      a > 0 ? 'opens up' :
-              '<span style="color:var(--c-a);">opens down</span>';
-    rVs.textContent = describeVs(a);
-    const yAt1 = a * 1 * 1;
-    rH1.innerHTML = 'y = <span style="color:var(--c-curve);">' + yAt1.toFixed(2) + '</span>';
-  }
-
-  slider.addEventListener('input', update);
-  update();
-})();
-
-
-/* =====================================================================
-   ROTATION WIDGET (§12)
+   ROTATION WIDGET (§11)
 ===================================================================== */
 (function () {
   const SVG_SIZE = 500;
