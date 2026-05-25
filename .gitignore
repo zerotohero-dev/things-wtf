@@ -9,8 +9,11 @@
 .claude/settings.local.json
 
 # Dual-site separation: internal content must never reach remote
-docs-internal/
+# docs-internal/
 site-internal/
 
 # IDEs
 .idea
+
+# Has internal details
+../things-wtf-broadcom/zensical-internal.toml

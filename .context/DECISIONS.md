@@ -10,14 +10,14 @@
 
 ## Quick Format (Y-Statement)
 
-For lightweight decisions, a single statement suffices:
+For lightweight 16 Decisions, a single statement suffices:
 
 > "In the context of [situation], facing [constraint], we decided for [choice]
 > and against [alternatives], to achieve [benefit], accepting that [trade-off]."
 
 ## Full Format
 
-For significant decisions:
+For significant 16 Decisions:
 
 ## [YYYY-MM-DD] Decision Title
 

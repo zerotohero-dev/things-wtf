@@ -1,0 +1,3063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quadratics &amp; Parabolas — A Field Guide</title>
+
+<!-- KaTeX for typeset math (dyscalculia: real math notation is much easier to parse than HTML hacks) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body,{delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false},
+          {left:'\\[',right:'\\]',display:true},
+          {left:'\\(',right:'\\)',display:false}
+        ], throwOnError:false});"></script>
+
+<!-- Fonts: Fraunces (display, editorial), Newsreader (body serif, reading-friendly),
+     JetBrains Mono (equations & code) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:opsz,wght,ital@6..72,200..800,0;6..72,200..800,1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- DESIGN TOKENS ---------- */
+:root {
+  /* Surface: warm ink, not pure black — easier on eyes for long reads */
+  --ink-0:        #0c0e14;     /* page background */
+  --ink-1:        #14171f;     /* card background */
+  --ink-2:        #1c2029;     /* elevated card */
+  --ink-3:        #262b36;     /* hover / border accent */
+  --ink-line:     #2f3543;     /* divider lines */
+
+  /* Reading colors — warm off-white, not stark white */
+  --paper:        #ece6d6;
+  --paper-soft:   #c8c2b3;     /* secondary text */
+  --paper-faint:  #7c7869;     /* tertiary, captions */
+
+  /* Variable colors — every "a", "b", "c" uses these consistently */
+  --c-a:          #ef8666;     /* coral — the coefficient "a" */
+  --c-a-glow:     #ef866633;
+  --c-b:          #6fc2c2;     /* teal — the coefficient "b" */
+  --c-b-glow:     #6fc2c233;
+  --c-c:          #e0b056;     /* amber — the coefficient "c" */
+  --c-c-glow:     #e0b05633;
+
+  --c-x:          #ece6d6;     /* the variable x */
+  --c-vertex:     #d978c8;     /* the vertex / key point */
+  --c-curve:      #94d9a5;     /* the parabola itself */
+  --c-axis:       #d978c8;     /* axis of symmetry */
+  --c-root:       #efd166;     /* roots / x-intercepts */
+
+  --accent:       #d978c8;     /* magenta accent for headings/links */
+  --accent-soft:  #d978c855;
+
+  /* Type */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body:    "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Rhythm */
+  --line:        1.7;
+  --pad:         clamp(20px, 4vw, 56px);
+  --maxw:        980px;
+}
+
+/* ---------- RESET / BASE ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ink-0);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 19px;             /* generous base — easier reading */
+  line-height: var(--line);
+  font-feature-settings: "ss01", "kern", "liga";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  /* Subtle grain so the page doesn't feel flat */
+  background-image:
+    radial-gradient(circle at 20% 10%, #1a1f2a 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, #1a1d28 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+::selection { background: var(--accent-soft); color: var(--paper); }
+
+/* ---------- LAYOUT ---------- */
+.container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+
+section { padding: 64px 0; border-top: 1px solid var(--ink-line); }
+section:first-of-type { border-top: none; }
+
+/* ---------- TYPOGRAPHY ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--paper);
+  font-variation-settings: "SOFT" 50, "WONK" 0;
+}
+
+h1 {
+  font-size: clamp(48px, 9vw, 112px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  margin: 0 0 0.3em;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+h2 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  margin: 0.4em 0 0.5em;
+}
+h2 .num {
+  font-family: var(--font-mono);
+  font-size: 0.5em;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 0;
+  margin-right: 0.7em;
+  vertical-align: 0.3em;
+}
+h3 {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 500;
+  margin: 1.6em 0 0.6em;
+  color: var(--paper);
+}
+h4 {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 1.2em 0 0.4em;
+  color: var(--paper-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+}
+
+p { margin: 0 0 1.1em; max-width: 68ch; }
+p.lede {
+  font-size: 1.25em;
+  line-height: 1.55;
+  color: var(--paper-soft);
+  font-style: italic;
+  max-width: 60ch;
+}
+
+strong { font-weight: 600; color: var(--paper); }
+em     { font-style: italic; color: var(--paper); }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
+a:hover { border-bottom-color: var(--accent); }
+
+/* ---------- HERO ---------- */
+.hero {
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 60px;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 30%, #d978c81a 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, #94d9a51a 0%, transparent 50%);
+  z-index: 0;
+}
+.hero .container { position: relative; z-index: 1; }
+.hero .eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 2em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+.hero .eyebrow::before, .hero .eyebrow::after {
+  content: "";
+  flex: 0 0 40px;
+  height: 1px;
+  background: var(--accent-soft);
+}
+.hero .eyebrow::after { flex: 1; }
+
+.hero .meta {
+  margin-top: 3em;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2em;
+  padding-top: 2em;
+  border-top: 1px solid var(--ink-line);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.hero .meta div span {
+  display: block;
+  color: var(--paper-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  margin-bottom: 0.6em;
+}
+.hero .meta div strong { color: var(--paper); font-weight: 500; }
+
+/* ---------- COLOR-CODED VARIABLES ---------- */
+/* These are the workhorses. Anywhere a, b, c appears, it carries its color. */
+.va { color: var(--c-a); font-weight: 600; }
+.vb { color: var(--c-b); font-weight: 600; }
+.vc { color: var(--c-c); font-weight: 600; }
+.vx { color: var(--c-x); font-weight: 600; }
+.vv { color: var(--c-vertex); font-weight: 600; }   /* vertex */
+.vr { color: var(--c-root);   font-weight: 600; }   /* roots */
+
+/* Pills used in the legend */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-line);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.pill .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- CARDS ---------- */
+.card {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-line);
+  border-radius: 4px;
+  padding: clamp(22px, 3vw, 36px);
+  margin: 1.5em 0;
+}
+.card.elev { background: var(--ink-2); }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1em;
+  margin: 1.5em 0;
+}
+
+/* Equation cards / blocks */
+.eq-display {
+  background: var(--ink-2);
+  border-left: 3px solid var(--accent);
+  padding: 1.5em 1.8em;
+  margin: 1.3em 0;
+  font-size: 1.1em;
+  overflow-x: auto;
+}
+.eq-display .label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--paper-faint);
+  margin-bottom: 0.9em;
+}
+
+/* The "three forms" feature */
+.three-forms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.5em;
+  margin: 2em 0;
+}
+.form-card {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-line);
+  border-radius: 4px;
+  padding: 1.5em 1.4em;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.form-card:hover { transform: translateY(-2px); border-color: var(--accent-soft); }
+.form-card h4 {
+  margin-top: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+.form-card .eq {
+  font-size: 1.1em;
+  margin: 0.6em 0 1em;
+}
+.form-card .desc {
+  font-size: 0.92em;
+  color: var(--paper-soft);
+  margin: 0;
+}
+
+/* Step-by-step worked example: one operation per line, with explanation */
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 1.5em 0;
+  counter-reset: step;
+}
+.steps > li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 1em;
+  padding: 1em 0;
+  border-top: 1px solid var(--ink-line);
+  counter-increment: step;
+}
+.steps > li:first-child { border-top: none; padding-top: 0; }
+.steps > li::before {
+  content: counter(step);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--ink-2);
+  border: 1px solid var(--ink-line);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+.steps .what {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--paper-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3em;
+}
+.steps .math {
+  font-size: 1.05em;
+  margin: 0.4em 0 0.3em;
+}
+.steps .why {
+  color: var(--paper-soft);
+  font-size: 0.95em;
+  margin-top: 0.4em;
+  font-style: italic;
+}
+
+/* Callouts */
+.callout {
+  background: var(--ink-2);
+  border-left: 3px solid var(--c-c);
+  padding: 1em 1.4em;
+  margin: 1.4em 0;
+  border-radius: 0 4px 4px 0;
+}
+.callout.warn  { border-left-color: var(--c-a); }
+.callout.tip   { border-left-color: var(--c-curve); }
+.callout.aside { border-left-color: var(--accent); }
+.callout h4 {
+  margin: 0 0 0.4em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- INTERACTIVE LAB ---------- */
+.lab {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-line);
+  border-radius: 4px;
+  padding: clamp(20px, 3vw, 32px);
+  margin: 2em 0;
+}
+.lab-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.8em;
+}
+@media (min-width: 760px) {
+  .lab-grid { grid-template-columns: 1.2fr 1fr; }
+}
+.lab svg {
+  width: 100%;
+  height: auto;
+  background: var(--ink-0);
+  border: 1px solid var(--ink-line);
+  border-radius: 3px;
+  display: block;
+}
+
+.slider-row {
+  margin: 1em 0;
+  display: grid;
+  grid-template-columns: 32px 1fr 64px;
+  align-items: center;
+  gap: 1em;
+}
+.slider-row label {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+}
+.slider-row .val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  text-align: right;
+  color: var(--paper-soft);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--ink-3);
+  border-radius: 999px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid var(--ink-0);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid var(--ink-0);
+}
+input[type="range"].slider-a::-webkit-slider-thumb { background: var(--c-a); box-shadow: 0 0 0 1px var(--c-a); }
+input[type="range"].slider-b::-webkit-slider-thumb { background: var(--c-b); box-shadow: 0 0 0 1px var(--c-b); }
+input[type="range"].slider-c::-webkit-slider-thumb { background: var(--c-c); box-shadow: 0 0 0 1px var(--c-c); }
+input[type="range"].slider-a::-moz-range-thumb { background: var(--c-a); }
+input[type="range"].slider-b::-moz-range-thumb { background: var(--c-b); }
+input[type="range"].slider-c::-moz-range-thumb { background: var(--c-c); }
+
+.readout {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--ink-2);
+  border-radius: 3px;
+  padding: 1em 1.2em;
+  margin-top: 1.5em;
+  line-height: 1.9;
+}
+.readout dt { color: var(--paper-faint); display: inline; margin-right: 0.6em; }
+.readout dd { display: inline; margin: 0; color: var(--paper); }
+.readout .row { display: flex; justify-content: space-between; }
+
+/* ---------- DISCRIMINANT TRIPLE CARD ---------- */
+.disc-three {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1em;
+  margin: 2em 0;
+}
+.disc-card {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-line);
+  border-top: 3px solid var(--ink-line);
+  padding: 1.4em;
+  border-radius: 4px;
+}
+.disc-card.pos { border-top-color: var(--c-curve); }
+.disc-card.zero { border-top-color: var(--c-c); }
+.disc-card.neg { border-top-color: var(--c-a); }
+.disc-card h4 {
+  margin-top: 0;
+  color: var(--paper);
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  font-size: 12px;
+}
+.disc-card .roots-count {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 1;
+  margin: 0.3em 0 0.2em;
+  font-weight: 300;
+}
+.disc-card .roots-count em {
+  font-style: italic;
+  color: var(--accent);
+  font-size: 0.6em;
+  vertical-align: 0.4em;
+  margin-left: 0.4em;
+  font-weight: 400;
+}
+.disc-card.pos .roots-count { color: var(--c-curve); }
+.disc-card.zero .roots-count { color: var(--c-c); }
+.disc-card.neg .roots-count { color: var(--c-a); }
+
+/* ---------- PRACTICE ---------- */
+.practice {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-line);
+  border-radius: 4px;
+  padding: 1.5em;
+  margin: 1.3em 0;
+}
+.practice .q {
+  font-size: 1.08em;
+  margin-bottom: 0.8em;
+}
+.practice details {
+  border-top: 1px solid var(--ink-line);
+  padding-top: 1em;
+  margin-top: 1em;
+}
+.practice summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  list-style: none;
+  display: inline-block;
+  border: 1px solid var(--accent-soft);
+  padding: 6px 14px;
+  border-radius: 999px;
+  user-select: none;
+}
+.practice summary::-webkit-details-marker { display: none; }
+.practice summary:hover { background: var(--accent-soft); }
+.practice details[open] summary { background: var(--accent-soft); }
+.practice .ans {
+  margin-top: 1.2em;
+  padding-left: 1em;
+  border-left: 2px solid var(--accent-soft);
+}
+
+/* ---------- CHEAT SHEET ---------- */
+.cheat {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-line);
+  border-radius: 4px;
+  padding: clamp(20px, 3vw, 36px);
+  margin: 2em 0;
+}
+.cheat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5em;
+  margin-top: 1.5em;
+}
+.cheat-grid .item h4 {
+  color: var(--accent);
+  margin-bottom: 0.5em;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  border-top: 1px solid var(--ink-line);
+  padding: 60px 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--paper-faint);
+}
+
+/* ---------- TOC ---------- */
+.toc {
+  position: sticky;
+  top: 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.toc ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  justify-content: center;
+}
+.toc a {
+  border: 1px solid var(--ink-line);
+  background: var(--ink-1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--paper-soft);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+.toc a:hover { color: var(--accent); border-color: var(--accent-soft); }
+
+/* KaTeX color adjustments — make math fit our palette */
+.katex { font-size: 1em !important; color: var(--paper); }
+.katex .mord { color: var(--paper); }
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .steps > li { grid-template-columns: 24px 1fr; gap: 0.7em; }
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     HERO
+===================================================================== -->
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">A FIELD GUIDE</div>
+    <h1>Quadratics<br>&amp; <em>Parabolas</em></h1>
+    <p class="lede">
+      Everything you need to understand second-degree equations and the
+      curves they draw — built carefully, color-coded throughout, with no
+      step skipped and no assumption left lurking.
+    </p>
+
+    <div class="meta">
+      <div><span>Topic</span><strong>Algebra II</strong></div>
+      <div><span>Reading time</span><strong>~45 min</strong></div>
+      <div><span>Prerequisites</span><strong>Basic algebra</strong></div>
+      <div><span>Notation</span><strong>Color-coded</strong></div>
+    </div>
+
+    <nav class="toc" style="margin-top: 3.5em;">
+      <ol>
+        <li><a href="#why">Why bother</a></li>
+        <li><a href="#degree">What "degree" means</a></li>
+        <li><a href="#anatomy">Anatomy</a></li>
+        <li><a href="#parabola">The parabola</a></li>
+        <li><a href="#forms">Three forms</a></li>
+        <li><a href="#roots-geom">Roots geometrically</a></li>
+        <li><a href="#solve">Solving</a></li>
+        <li><a href="#disc">Discriminant</a></li>
+        <li><a href="#vertex">Vertex</a></li>
+        <li><a href="#transform">Transformations</a></li>
+        <li><a href="#orient">Sideways &amp; tilted</a></li>
+        <li><a href="#lab">Lab</a></li>
+        <li><a href="#worked">Worked examples</a></li>
+        <li><a href="#practice">Practice</a></li>
+        <li><a href="#world">Real world</a></li>
+        <li><a href="#cheat">Cheat sheet</a></li>
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<!-- =====================================================================
+     §01 — WHY BOTHER
+===================================================================== -->
+<section id="why">
+  <div class="container">
+    <h2><span class="num">§01</span>Why bother with these?</h2>
+
+    <p>
+      Throw a ball. Any ball, any direction. Watch its path. It rises,
+      slows, stops climbing, and falls back down — and the shape it traces
+      through the air is a <strong>parabola</strong>. Not a triangle, not
+      a circle, not a line. A parabola, every single time.
+    </p>
+
+    <p>
+      Point a satellite dish at the sky: the bowl is a parabola, because
+      it focuses every incoming radio wave onto a single point. Look
+      inside a car's headlight: parabola, because it sends every ray of
+      light from one bulb out as parallel beams. Push water through a
+      garden hose held at an angle: parabola. Drop a marble down a
+      spinning bucket: the surface of the water forms a parabola.
+    </p>
+
+    <p>
+      The shape comes from a single, modest-looking equation. Once you
+      can read it, you can predict where the ball lands, how tall the
+      bridge needs to be, when the rocket reaches peak altitude, where
+      to place the antenna at the focus of a dish. That equation —
+      the one that draws all these curves — is a <strong>quadratic</strong>,
+      or as your textbook will phrase it, a <em>second-degree equation</em>.
+    </p>
+
+    <div class="callout aside">
+      <h4>WHAT YOU'LL GET FROM THIS PAGE</h4>
+      <p>
+        By the end, you will be able to look at any quadratic equation
+        and (a) know what its graph looks like before drawing it,
+        (b) find its highest or lowest point, (c) find where it crosses
+        the x-axis if it does, and (d) re-write it in whichever form
+        you need. Each piece will be color-coded so you don't have to
+        track which letter is which while you're also doing arithmetic.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §02 — DEGREE
+===================================================================== -->
+<section id="degree">
+  <div class="container">
+    <h2><span class="num">§02</span>What "second degree" actually means</h2>
+
+    <p>
+      The <strong>degree</strong> of an equation is just the highest
+      power of $x$ that appears in it. Nothing fancier than that.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>1st degree (LINEAR)</h4>
+        <div class="eq-display"><span class="label">Example</span>$\;3x + 7 = 0$</div>
+        <p style="margin: 0; color: var(--paper-soft);">
+          Highest power of $x$ is $1$. The graph is a <strong>straight line</strong>.
+        </p>
+      </div>
+      <div class="card">
+        <h4>2nd degree (QUADRATIC)</h4>
+        <div class="eq-display"><span class="label">Example</span>$\;2x^2 + 3x + 7 = 0$</div>
+        <p style="margin: 0; color: var(--paper-soft);">
+          Highest power of $x$ is $2$. The graph is a <strong>parabola</strong>.
+        </p>
+      </div>
+      <div class="card">
+        <h4>3rd degree (CUBIC)</h4>
+        <div class="eq-display"><span class="label">Example</span>$\;x^3 - x = 0$</div>
+        <p style="margin: 0; color: var(--paper-soft);">
+          Highest power is $3$. The graph is a curvy "S" shape.
+        </p>
+      </div>
+    </div>
+
+    <p>
+      So "second-degree equation" is just a longer way of saying
+      "an equation where the biggest power of $x$ is $2$." Wherever
+      you see $x^2$ as the largest term, you're holding a quadratic.
+    </p>
+
+    <div class="callout warn">
+      <h4>HEADS-UP</h4>
+      <p>
+        The $x^2$ term <em>must actually be there</em> — and its
+        coefficient (the number in front of it) cannot be zero. If it
+        were zero, the $x^2$ would vanish and you'd be left with a
+        plain linear equation. We'll see why that matters in a second.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §03 — ANATOMY
+===================================================================== -->
+<section id="anatomy">
+  <div class="container">
+    <h2><span class="num">§03</span>The anatomy of a quadratic</h2>
+
+    <p>
+      Every quadratic equation, when fully tidied up, can be written
+      in this <strong>standard form</strong>:
+    </p>
+
+    <div class="eq-display" style="font-size: 1.5em; text-align: center; padding: 2em 1em;">
+      <span class="va">a</span><span class="vx">x</span>² + <span class="vb">b</span><span class="vx">x</span> + <span class="vc">c</span> = 0
+    </div>
+
+    <p>
+      Three letters — $\color{#ef8666}{a}$, $\color{#6fc2c2}{b}$,
+      $\color{#e0b056}{c}$ — and one variable, $x$. The three letters are
+      called <strong>coefficients</strong>. They are just numbers; they
+      look like letters here because we want to talk about <em>any</em>
+      quadratic, so we leave the numbers as placeholders.
+    </p>
+
+    <h3>Reading each piece</h3>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4 style="color: var(--c-a);">
+          <span class="pill" style="color: var(--c-a);"><span class="dot"></span>a</span>
+          <span style="margin-left: 1em;">THE LEADING COEFFICIENT</span>
+        </h4>
+        <p>
+          The number in front of $x^2$. It controls how "wide" or
+          "narrow" the parabola is, and — most importantly — its
+          <strong>sign</strong> decides whether the parabola opens
+          <strong>upward</strong> (smile) or <strong>downward</strong>
+          (frown).
+        </p>
+        <p style="margin: 0; color: var(--paper-soft); font-size: 0.95em;">
+          If <span class="va">a</span> &gt; 0 → opens up.<br>
+          If <span class="va">a</span> &lt; 0 → opens down.<br>
+          If <span class="va">a</span> = 0 → it's not a quadratic at all.
+        </p>
+      </div>
+
+      <div class="card">
+        <h4 style="color: var(--c-b);">
+          <span class="pill" style="color: var(--c-b);"><span class="dot"></span>b</span>
+          <span style="margin-left: 1em;">THE MIDDLE TERM</span>
+        </h4>
+        <p>
+          The number in front of $x$ (just $x$, not $x^2$). It shifts
+          the parabola sideways and up/down in combination with
+          <span class="va">a</span>. We mainly use it to find the
+          vertex.
+        </p>
+        <p style="margin: 0; color: var(--paper-soft); font-size: 0.95em;">
+          Can be positive, negative, or zero. If <span class="vb">b</span> = 0,
+          the parabola sits with its vertex right on the y-axis.
+        </p>
+      </div>
+
+      <div class="card">
+        <h4 style="color: var(--c-c);">
+          <span class="pill" style="color: var(--c-c);"><span class="dot"></span>c</span>
+          <span style="margin-left: 1em;">THE CONSTANT</span>
+        </h4>
+        <p>
+          The lone number with no $x$ attached. It tells you
+          where the parabola crosses the <strong>y-axis</strong> —
+          because at the y-axis, $x = 0$, so every term with $x$
+          disappears and only <span class="vc">c</span> is left.
+        </p>
+        <p style="margin: 0; color: var(--paper-soft); font-size: 0.95em;">
+          The y-intercept is always the point $(0, \,$<span class="vc">c</span>$)$.
+        </p>
+      </div>
+    </div>
+
+    <h3>A concrete example</h3>
+
+    <p>Suppose we have:</p>
+
+    <div class="eq-display" style="font-size: 1.5em; text-align: center;">
+      <span class="va">2</span><span class="vx">x</span>² <span style="color: var(--paper-soft);">+</span> <span class="vb">5</span><span class="vx">x</span> <span style="color: var(--paper-soft);">−</span> <span class="vc">3</span> = 0
+    </div>
+
+    <p>Reading it: <span class="va">a = 2</span>, <span class="vb">b = 5</span>, <span class="vc">c = −3</span>.</p>
+
+    <div class="callout warn">
+      <h4>TRAP TO AVOID</h4>
+      <p>
+        The sign in front of a coefficient belongs to that
+        coefficient. In the example above, the equation has
+        $-3$ at the end, so <span class="vc">c = −3</span>,
+        <em>not</em> $3$. Always carry the sign with the number.
+        It saves a lot of grief later.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §04 — THE PARABOLA
+===================================================================== -->
+<section id="parabola">
+  <div class="container">
+    <h2><span class="num">§04</span>The parabola — what the graph looks like</h2>
+
+    <p>
+      A quadratic equation is something you can <strong>solve</strong>.
+      But every quadratic also has a partner: a <strong>function</strong>,
+      written
+    </p>
+
+    <div class="eq-display" style="font-size: 1.4em; text-align: center;">
+      $y = $ <span class="va">a</span>$x^2 + $ <span class="vb">b</span>$x + $ <span class="vc">c</span>
+    </div>
+
+    <p>
+      …which, when you plot it on a graph (every input $x$ paired with
+      its output $y$), draws a <strong>parabola</strong>. The values
+      of $x$ that make $y = 0$ — the spots where the curve crosses
+      the x-axis — are exactly the <em>solutions</em> of the original
+      equation. So the equation and the graph are the same thing told
+      two different ways.
+    </p>
+
+    <h3>The parts of a parabola</h3>
+
+    <p>Here is a labeled diagram of an upward-opening parabola:</p>
+
+    <div class="card" style="text-align: center;">
+      <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#7c7869"/>
+          </marker>
+        </defs>
+        <!-- Axes -->
+        <line x1="60" y1="380" x2="660" y2="380" stroke="#2f3543" stroke-width="1"/>
+        <line x1="350" y1="40" x2="350" y2="400" stroke="#2f3543" stroke-width="1"/>
+        <text x="668" y="384" fill="#7c7869" font-family="JetBrains Mono" font-size="11">x</text>
+        <text x="356" y="38" fill="#7c7869" font-family="JetBrains Mono" font-size="11">y</text>
+
+        <!-- Parabola: y = 0.012(x-350)^2 + 60, drawn from x=80 to x=620 -->
+        <path d="M 100 380
+                 Q 350 -100 600 380"
+              fill="none" stroke="#94d9a5" stroke-width="2.5"/>
+
+        <!-- Axis of symmetry (dashed vertical through vertex) -->
+        <line x1="350" y1="60" x2="350" y2="400" stroke="#d978c8" stroke-width="1" stroke-dasharray="5,4" opacity="0.6"/>
+        <text x="358" y="55" fill="#d978c8" font-family="Newsreader" font-size="13" font-style="italic">axis of symmetry</text>
+
+        <!-- Vertex point -->
+        <circle cx="350" cy="60" r="6" fill="#d978c8"/>
+        <text x="358" y="78" fill="#d978c8" font-family="Newsreader" font-size="14">vertex (h, k)</text>
+
+        <!-- Roots (x-intercepts) -->
+        <circle cx="150" cy="380" r="6" fill="#efd166"/>
+        <circle cx="550" cy="380" r="6" fill="#efd166"/>
+        <text x="120" y="405" fill="#efd166" font-family="Newsreader" font-size="13" font-style="italic">root x₁</text>
+        <text x="525" y="405" fill="#efd166" font-family="Newsreader" font-size="13" font-style="italic">root x₂</text>
+
+        <!-- y-intercept -->
+        <circle cx="350" cy="280" r="6" fill="#e0b056"/>
+        <text x="200" y="285" fill="#e0b056" font-family="Newsreader" font-size="13" font-style="italic">y-intercept (0, c)</text>
+
+        <!-- Labels for direction -->
+        <text x="80" y="200" fill="#94d9a5" font-family="Newsreader" font-size="14" font-style="italic">the curve</text>
+        <text x="80" y="218" fill="#94d9a5" font-family="Newsreader" font-size="14" font-style="italic">opens upward</text>
+        <text x="80" y="236" fill="#94d9a5" font-family="Newsreader" font-size="13" opacity="0.7">(because a &gt; 0)</text>
+      </svg>
+    </div>
+
+    <h3>Each part, in plain language</h3>
+
+    <p>
+      <strong>The vertex</strong> is the very tip of the parabola — the
+      lowest point if the curve opens up, the highest point if it opens
+      down. We label its coordinates $($<span class="vv">h</span>, <span class="vv">k</span>$)$
+      because $h$ and $k$ are traditional letters for "horizontal shift"
+      and "vertical shift." The vertex is the most important point on a
+      parabola; almost every problem hinges on finding it.
+    </p>
+
+    <p>
+      <strong>The axis of symmetry</strong> is the vertical line passing
+      through the vertex. The parabola is a perfect mirror image across
+      this line — fold the page along it and the two halves match
+      exactly. Its equation is just $x = $ <span class="vv">h</span> (a
+      vertical line at the vertex's x-coordinate).
+    </p>
+
+    <p>
+      <strong>The roots</strong> (also called <strong>zeros</strong>,
+      <strong>solutions</strong>, or <strong>x-intercepts</strong> —
+      same thing, four names) are the points where the parabola crosses
+      the x-axis. At each root, $y = 0$, which is exactly the condition
+      in the original equation
+      <span class="va">a</span>$x^2 + $ <span class="vb">b</span>$x + $ <span class="vc">c</span> $= 0$.
+    </p>
+
+    <p>
+      <strong>The y-intercept</strong> is where the parabola crosses
+      the y-axis. Set $x = 0$ in the equation and every term with $x$
+      goes away, leaving just <span class="vc">c</span>. So the
+      y-intercept is always $(0, \,$<span class="vc">c</span>$)$.
+    </p>
+
+    <div class="callout tip">
+      <h4>FOUR NAMES, ONE THING</h4>
+      <p>
+        "Root", "zero", "solution", and "x-intercept" all mean the
+        same thing for a quadratic: a value of $x$ that makes $y = 0$.
+        Don't let the vocabulary trick you into thinking there are
+        four different concepts here. There is one concept and four
+        teachers' favorite words for it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §05 — THREE FORMS
+===================================================================== -->
+<section id="forms">
+  <div class="container">
+    <h2><span class="num">§05</span>Three forms, three lenses</h2>
+
+    <p>
+      The same quadratic can be written three different ways. None of
+      them is "more correct" than the others — each one shows you
+      something different at a glance. Switching between them is one
+      of the main skills.
+    </p>
+
+    <div class="three-forms">
+      <div class="form-card">
+        <h4>STANDARD FORM</h4>
+        <div class="eq" style="font-size: 1.2em;">
+          $y = $ <span class="va">a</span>$x^2 + $ <span class="vb">b</span>$x + $ <span class="vc">c</span>
+        </div>
+        <p class="desc">
+          The default. Easy to read off <span class="va">a</span>,
+          <span class="vb">b</span>, <span class="vc">c</span>. Tells
+          you the y-intercept for free
+          (it's <span class="vc">c</span>). This is the form you
+          plug into the quadratic formula.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <h4>VERTEX FORM</h4>
+        <div class="eq" style="font-size: 1.2em;">
+          $y = $ <span class="va">a</span>$($<span class="vx">x</span> − <span class="vv">h</span>$)^2 +$ <span class="vv">k</span>
+        </div>
+        <p class="desc">
+          The form that hands you the vertex directly: it's at
+          $($<span class="vv">h</span>, <span class="vv">k</span>$)$.
+          Watch the sign — vertex form has a <em>minus</em>
+          inside the parentheses, so $y = (x - 3)^2$ has
+          vertex at $x = 3$, not $-3$.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <h4>FACTORED FORM</h4>
+        <div class="eq" style="font-size: 1.2em;">
+          $y = $ <span class="va">a</span>$($<span class="vx">x</span> − <span class="vr">r₁</span>$)($<span class="vx">x</span> − <span class="vr">r₂</span>$)$
+        </div>
+        <p class="desc">
+          The form that hands you the roots directly:
+          <span class="vr">r₁</span> and <span class="vr">r₂</span> are
+          the x-intercepts. Same sign rule — minus inside the
+          parentheses, so the root really is positive
+          <span class="vr">r₁</span>.
+        </p>
+      </div>
+    </div>
+
+    <h3>Same parabola, three voices</h3>
+
+    <p>Watch the same curve get described three ways:</p>
+
+    <div class="card elev">
+      <p style="font-family: var(--font-mono); margin-bottom: 1em; color: var(--paper-faint); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.1em;">Standard</p>
+      <div class="eq-display" style="margin-top: 0;">$y = x^2 - 4x + 3$</div>
+
+      <p style="font-family: var(--font-mono); margin-bottom: 1em; color: var(--paper-faint); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.1em;">Vertex form</p>
+      <div class="eq-display" style="margin-top: 0;">$y = (x - 2)^2 - 1$</div>
+      <p style="color: var(--paper-soft); margin-top: -0.5em;">→ Vertex at $($<span class="vv">2</span>, <span class="vv">−1</span>$)$.</p>
+
+      <p style="font-family: var(--font-mono); margin-bottom: 1em; color: var(--paper-faint); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.1em;">Factored form</p>
+      <div class="eq-display" style="margin-top: 0;">$y = (x - 1)(x - 3)$</div>
+      <p style="color: var(--paper-soft); margin-top: -0.5em;">→ Roots at $x = $<span class="vr">1</span> and $x = $<span class="vr">3</span>.</p>
+    </div>
+
+    <p>
+      Three identities, one parabola. If you multiplied out vertex
+      form or factored form, you would land back at standard form
+      every time. Try it: expand $(x-1)(x-3)$ and you get
+      $x^2 - 4x + 3$. Expand $(x-2)^2 - 1$ and you get the same.
+    </p>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §06 — ROOTS, GEOMETRICALLY
+===================================================================== -->
+<section id="roots-geom">
+  <div class="container">
+    <h2><span class="num">§06</span>Roots, geometrically — solving <em>is</em> intersecting</h2>
+
+    <p class="lede">
+      Before we learn the mechanics of solving, let's pause and see
+      what we're actually doing — visually. The roots aren't an
+      abstract number puzzle. They're a specific point on the page.
+    </p>
+
+    <h3>The big idea</h3>
+
+    <p>
+      You've met two things that look related but separate: the
+      parabola $y = $<span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span>
+      (a curve), and the equation
+      <span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span> $= 0$
+      (a thing you solve). The connection between them is the whole
+      point of this section:
+    </p>
+
+    <div class="eq-display">
+      <span class="label">The geometric meaning of "solve"</span>
+      To <strong>solve</strong> <span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span> $= 0$
+      is to find every $x$ where the parabola
+      $y = $<span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span>
+      passes through the horizontal line $y = 0$.
+    </div>
+
+    <p>
+      The horizontal line $y = 0$ has a more familiar name: the
+      <strong>x-axis</strong>. So the roots are exactly the x-values
+      where the parabola <em>crosses the x-axis</em>. That's it.
+      Every "method" we'll learn next — factoring, completing the
+      square, the formula — is just a different way to compute those
+      crossing points.
+    </p>
+
+    <h3>Why is a root a root?</h3>
+
+    <p>
+      Take the parabola $y = x^2 - 4$. It crosses the x-axis at
+      $x = -2$ and $x = 2$ — you can see that in the picture below.
+      Now plug $x = 2$ into the function: $y = (2)^2 - 4 = 4 - 4 = 0$.
+      The function spits out $0$, which is exactly what we mean by
+      "lying on the x-axis." Same for $x = -2$: $(-2)^2 - 4 = 0$.
+      <strong>Being a root</strong> and <strong>being a point on the
+      x-axis</strong> are literally the same property, just said two
+      different ways.
+    </p>
+
+    <div class="card" style="text-align: center;">
+      <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+        <!-- Grid -->
+        <g stroke="#1c2029" stroke-width="0.6">
+          <line x1="0" y1="60" x2="700" y2="60"/>
+          <line x1="0" y1="120" x2="700" y2="120"/>
+          <line x1="0" y1="240" x2="700" y2="240"/>
+          <line x1="0" y1="300" x2="700" y2="300"/>
+          <line x1="150" y1="0" x2="150" y2="360"/>
+          <line x1="250" y1="0" x2="250" y2="360"/>
+          <line x1="450" y1="0" x2="450" y2="360"/>
+          <line x1="550" y1="0" x2="550" y2="360"/>
+        </g>
+        <!-- x-axis (y=0): highlighted thick magenta -->
+        <line x1="0" y1="180" x2="700" y2="180" stroke="#d978c8" stroke-width="2"/>
+        <text x="10" y="172" fill="#d978c8" font-family="JetBrains Mono" font-size="12">y = 0  (the x-axis)</text>
+        <!-- y-axis -->
+        <line x1="350" y1="0" x2="350" y2="360" stroke="#3a4151" stroke-width="1"/>
+        <!-- Parabola y = x^2 - 4, scale 60 px per unit, plotted x in [-3.5, 3.5] -->
+        <path d="M 140 320
+                 Q 350 -260 560 320"
+              fill="none" stroke="#94d9a5" stroke-width="2.5"/>
+        <!-- Roots at x = -2 and x = +2 -->
+        <circle cx="230" cy="180" r="7" fill="#efd166"/>
+        <circle cx="470" cy="180" r="7" fill="#efd166"/>
+        <text x="200" y="210" fill="#efd166" font-family="Newsreader" font-style="italic" font-size="14">x = −2</text>
+        <text x="450" y="210" fill="#efd166" font-family="Newsreader" font-style="italic" font-size="14">x = +2</text>
+        <text x="200" y="225" fill="#efd166" font-family="Newsreader" font-style="italic" font-size="12" opacity="0.7">a root</text>
+        <text x="450" y="225" fill="#efd166" font-family="Newsreader" font-style="italic" font-size="12" opacity="0.7">a root</text>
+        <!-- Vertex -->
+        <circle cx="350" cy="60" r="5" fill="#d978c8" opacity="0.6"/>
+        <text x="360" y="55" fill="#d978c8" font-family="Newsreader" font-style="italic" font-size="13" opacity="0.8">vertex (0, −4)</text>
+        <!-- Curve label -->
+        <text x="80" y="100" fill="#94d9a5" font-family="Newsreader" font-style="italic" font-size="14">y = x² − 4</text>
+      </svg>
+    </div>
+
+    <h3>The bigger principle</h3>
+
+    <p>
+      This idea is bigger than just quadratics, and worth absorbing
+      because it'll come back forever in math. <strong>Any</strong>
+      equation of the form $f(x) = g(x)$ is asking the same geometric
+      question:
+    </p>
+
+    <div class="eq-display">
+      <span class="label">The universal translation</span>
+      "Solve $f(x) = g(x)$" $\;\;\Leftrightarrow\;\;$ "Find every $x$ where the graphs $y = f(x)$ and $y = g(x)$ intersect."
+    </div>
+
+    <p>
+      For our quadratic, the right-hand side is $g(x) = 0$, which
+      draws the x-axis. But what if it were $g(x) = 5$ instead? Then
+      we're asking <em>where does the parabola cross the horizontal
+      line $y = 5$?</em> Those crossing points are the solutions of
+      <span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span> $= 5$.
+    </p>
+
+    <p>
+      Rearrange that equation:
+      <span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span> $- 5 = 0$,
+      and you have a brand-new quadratic with the same shape as before
+      but with <span class="vc">c</span> replaced by
+      <span class="vc">c</span>$- 5$. The crossing points haven't
+      moved (the parabola is in the same place, and the line is in
+      the same place) — we just relabeled the question. Two ways to
+      think about the same picture.
+    </p>
+
+    <div class="callout aside">
+      <h4>WORTH HIGHLIGHTING</h4>
+      <p>
+        <strong>Solving an equation is the same as finding where two
+        graphs meet.</strong> Memorize that sentence. Every algebra
+        problem from here to the end of high school can be re-cast
+        through it. When you're stuck on an equation, sketch the
+        graphs of both sides — sometimes the picture answers it before
+        the algebra does.
+      </p>
+    </div>
+
+    <h3>Try it — slide the line</h3>
+
+    <p>
+      Below is a fixed parabola and a horizontal line you can move up
+      and down. As you slide, watch the intersection dots: they tell
+      you the solutions of "parabola equals line." When the line is
+      at $y = 0$, those dots are the roots. When the line dips below
+      the vertex, there are no real solutions — because the line and
+      the parabola never meet.
+    </p>
+
+    <div class="lab">
+      <div class="lab-grid">
+        <div>
+          <svg id="roots-plot" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <g id="roots-grid"></g>
+            <!-- x-axis (always shown thicker as the "ground truth" reference) -->
+            <line x1="0" y1="250" x2="500" y2="250" stroke="#3a4151" stroke-width="1.2"/>
+            <line x1="250" y1="0" x2="250" y2="500" stroke="#3a4151" stroke-width="1.2"/>
+            <text x="490" y="245" fill="#7c7869" font-size="11" font-family="JetBrains Mono" text-anchor="end">x</text>
+            <text x="256" y="14" fill="#7c7869" font-size="11" font-family="JetBrains Mono">y</text>
+            <!-- The horizontal line y = k (the "moving" line) -->
+            <line id="roots-line" x1="0" y1="250" x2="500" y2="250" stroke="#d978c8" stroke-width="2.5"/>
+            <text id="roots-line-label" x="10" y="240" fill="#d978c8" font-family="JetBrains Mono" font-size="12">y = 0</text>
+            <!-- Parabola: fixed, y = 0.4x² - 1.6x - 1 -->
+            <path id="roots-curve" d="" fill="none" stroke="#94d9a5" stroke-width="2.5"/>
+            <!-- Intersection dots -->
+            <circle id="roots-dot1" cx="-100" cy="250" r="6" fill="#efd166"/>
+            <circle id="roots-dot2" cx="-100" cy="250" r="6" fill="#efd166"/>
+            <!-- Vertex (for reference) -->
+            <circle id="roots-vertex" cx="250" cy="250" r="4" fill="#d978c8" opacity="0.5"/>
+          </svg>
+        </div>
+
+        <div>
+          <p style="font-family: var(--font-mono); font-size: 12px; color: var(--paper-faint); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 0;">Fixed parabola</p>
+          <div class="eq-display" style="margin: 0.4em 0 1.5em;">
+            $y = 0.4x^2 - 1.6x - 1$
+          </div>
+
+          <div class="slider-row">
+            <label style="color: var(--c-vertex);">k</label>
+            <input type="range" id="slider-k" min="-5" max="6" step="0.1" value="0">
+            <span class="val" id="val-k">0.0</span>
+          </div>
+          <p style="font-size: 0.85em; color: var(--paper-faint); margin-top: -0.5em;">
+            (the height of the horizontal line)
+          </p>
+
+          <div class="readout">
+            <div class="row">
+              <span><dt>equation</dt></span>
+              <span><dd id="r-roots-eq">0.4x² − 1.6x − 1 = 0</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>rearranged</dt></span>
+              <span><dd id="r-roots-rearr">0.4x² − 1.6x − 1 = 0</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>Δ</dt></span>
+              <span><dd id="r-roots-disc">2.56 + 1.6 = 4.16</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>intersections</dt></span>
+              <span><dd id="r-roots-sols" style="color: var(--c-root);">x ≈ −0.55, 4.55</dd></span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.9em; color: var(--paper-soft); margin-top: 1.5em;">
+            <strong>Try this:</strong> drag $k$ down below the vertex
+            ($y \approx -2.6$ for this parabola). The line stops
+            crossing the curve, and the equation has no real
+            solutions — even though the parabola hasn't moved at all.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §07 — SOLVING
+===================================================================== -->
+<section id="solve">
+  <div class="container">
+    <h2><span class="num">§07</span>How to solve a quadratic</h2>
+
+    <p class="lede">
+      "Solving" means: find the value(s) of $x$ that make the equation
+      true — that is, the roots. There are four reliable methods, each
+      best for a different situation. Know all four; reach for the one
+      that fits the problem in front of you.
+    </p>
+
+    <!-- METHOD 1 -->
+    <h3>Method 1 — The square root method</h3>
+
+    <p>
+      Use this when there is <em>no</em> middle term (i.e.,
+      <span class="vb">b = 0</span>). The equation looks like
+      <span class="va">a</span>$x^2 + $ <span class="vc">c</span> $= 0$,
+      and you can isolate $x^2$ and take the square root of both sides.
+    </p>
+
+    <div class="card elev">
+      <h4>EXAMPLE</h4>
+      <p>Solve $2x^2 - 18 = 0$.</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Move the constant</div>
+            <div class="math">$2x^2 = 18$</div>
+            <div class="why">Add 18 to both sides to get $x^2$ alone on one side.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Isolate $x^2$</div>
+            <div class="math">$x^2 = 9$</div>
+            <div class="why">Divide both sides by 2.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Take the square root</div>
+            <div class="math">$x = \pm 3$</div>
+            <div class="why">
+              Both $+3$ and $-3$ square to $9$, so there are
+              <strong>two</strong> solutions. The $\pm$ symbol (read
+              "plus or minus") packages them together.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout warn">
+      <h4>DON'T FORGET THE ±</h4>
+      <p>
+        Every positive number has two square roots: a positive one
+        and a negative one. $3^2 = 9$ and $(-3)^2 = 9$. Writing
+        only $x = 3$ is the most common mistake on these problems.
+        Always write $\pm$.
+      </p>
+    </div>
+
+    <!-- METHOD 2 -->
+    <h3>Method 2 — Factoring</h3>
+
+    <p>
+      Factoring rewrites the quadratic as a product of two simpler
+      pieces, then uses the <strong>zero product property</strong>:
+      if two things multiplied together equal zero, at least one of
+      them must be zero.
+    </p>
+
+    <div class="eq-display">
+      <span class="label">Zero product property</span>
+      If $\;A \cdot B = 0\;$ then $\;A = 0\;$ or $\;B = 0$ (or both).
+    </div>
+
+    <div class="card elev">
+      <h4>EXAMPLE</h4>
+      <p>Solve $x^2 - 5x + 6 = 0$.</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Find two numbers</div>
+            <div class="math">that <em>multiply</em> to <span class="vc">6</span> and <em>add</em> to <span class="vb">−5</span></div>
+            <div class="why">
+              These two numbers will become the roots (with a sign flip).
+              Think: $-2$ and $-3$. Check: $(-2) \times (-3) = 6$ ✓
+              and $(-2) + (-3) = -5$ ✓.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Write in factored form</div>
+            <div class="math">$(x - 2)(x - 3) = 0$</div>
+            <div class="why">
+              The signs flip because vertex/factored form has a
+              minus inside the parentheses. If the numbers were
+              $-2$ and $-3$, the factors are $(x - 2)$ and $(x - 3)$.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Apply zero product</div>
+            <div class="math">$x - 2 = 0\;$ or $\;x - 3 = 0$</div>
+            <div class="why">
+              At least one factor has to be zero, so set each
+              factor equal to zero separately.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Solve each</div>
+            <div class="math">$x = 2\;$ or $\;x = 3$</div>
+            <div class="why">Two roots. Done.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout tip">
+      <h4>WHEN FACTORING FAILS</h4>
+      <p>
+        Factoring is fast when the roots are whole numbers or nice
+        fractions. When the roots are messy (irrational, or with
+        weird decimals), no whole-number pair will work, and you
+        should switch to the quadratic formula. <em>You haven't done
+        anything wrong</em> — some quadratics just aren't factorable
+        with nice numbers.
+      </p>
+    </div>
+
+    <!-- METHOD 3 -->
+    <h3>Method 3 — Completing the square</h3>
+
+    <p>
+      This method is less popular than factoring or the formula, but
+      it's <em>conceptually</em> the most important — it's how the
+      quadratic formula gets derived in the first place, and it's
+      how you convert standard form into vertex form. Worth learning
+      once, even if you don't use it daily.
+    </p>
+
+    <p>The idea: take any quadratic and force it into the shape
+    of a perfect square plus a leftover.</p>
+
+    <div class="card elev">
+      <h4>EXAMPLE</h4>
+      <p>Solve $x^2 + 6x + 5 = 0$ by completing the square.</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Isolate the variable terms</div>
+            <div class="math">$x^2 + 6x = -5$</div>
+            <div class="why">Move the constant to the right side.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Take half of <span class="vb">b</span></div>
+            <div class="math">half of $6$ is $3$</div>
+            <div class="why">
+              Take the coefficient of $x$ (the <span class="vb">b</span>),
+              cut it in half. This is the magic number.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Square that half</div>
+            <div class="math">$3^2 = 9$</div>
+            <div class="why">Square the half. This is what you'll add to both sides.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Add to both sides</div>
+            <div class="math">$x^2 + 6x + 9 = -5 + 9$</div>
+            <div class="why">
+              Add $9$ to both sides. Adding the same thing to both
+              sides preserves the equality — but now the left side
+              is a perfect square.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Write the left as a square</div>
+            <div class="math">$(x + 3)^2 = 4$</div>
+            <div class="why">
+              $x^2 + 6x + 9$ factors as $(x+3)(x+3) = (x+3)^2$. That
+              "+3" inside is exactly the half from Step 2 — no
+              coincidence; that's why the method works.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Square root both sides</div>
+            <div class="math">$x + 3 = \pm 2$</div>
+            <div class="why">Remember the ±.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Solve for $x$</div>
+            <div class="math">$x = -3 \pm 2$, so $x = -1$ or $x = -5$</div>
+            <div class="why">Two roots, as expected.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- METHOD 4 -->
+    <h3>Method 4 — The quadratic formula</h3>
+
+    <p>
+      The universal method. It works on <em>every</em> quadratic, no
+      matter how nasty. If completing the square is done abstractly
+      on the generic equation
+      <span class="va">a</span>$x^2 + $ <span class="vb">b</span>$x + $ <span class="vc">c</span> $= 0$,
+      this is what comes out:
+    </p>
+
+    <div class="eq-display" style="font-size: 1.5em; text-align: center; padding: 2em 1em;">
+      $\;x = \dfrac{-\color{#6fc2c2}b \pm \sqrt{\color{#6fc2c2}b^{\,2} - 4\color{#ef8666}a\,\color{#e0b056}c}}{2\,\color{#ef8666}a}$
+    </div>
+
+    <p>
+      Three coefficients in, the roots come out. Memorize it.
+      Sing it if you have to (there's actually a song to the tune
+      of "Pop Goes the Weasel" — look it up).
+    </p>
+
+    <div class="card elev">
+      <h4>EXAMPLE</h4>
+      <p>Solve $2x^2 + 5x - 3 = 0$ with the formula.</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Identify the coefficients</div>
+            <div class="math"><span class="va">a = 2</span>, <span class="vb">b = 5</span>, <span class="vc">c = −3</span></div>
+            <div class="why">Always write these down before substituting. Carry the signs.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Substitute into the formula</div>
+            <div class="math">$x = \dfrac{-(5) \pm \sqrt{(5)^2 - 4(2)(-3)}}{2(2)}$</div>
+            <div class="why">
+              Each letter gets replaced by its number. Use parentheses
+              around <em>every</em> substitution — this is the single
+              best habit to avoid sign mistakes.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Compute the discriminant (under the root)</div>
+            <div class="math">$(5)^2 - 4(2)(-3) = 25 + 24 = 49$</div>
+            <div class="why">
+              $25 - (-24) = 25 + 24$. The two negatives multiply to
+              a positive, so this whole thing ends up bigger, not smaller.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Plug it back in</div>
+            <div class="math">$x = \dfrac{-5 \pm \sqrt{49}}{4} = \dfrac{-5 \pm 7}{4}$</div>
+            <div class="why">$\sqrt{49} = 7$.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Split the ±</div>
+            <div class="math">$x = \dfrac{-5 + 7}{4} = \dfrac{2}{4} = \dfrac{1}{2}\;\;$ or $\;\;x = \dfrac{-5 - 7}{4} = \dfrac{-12}{4} = -3$</div>
+            <div class="why">Two roots: $x = \tfrac{1}{2}$ or $x = -3$.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout aside">
+      <h4>WHICH METHOD WHEN?</h4>
+      <p>
+        <strong>No middle term?</strong> Square root method.
+        <strong>Nice whole numbers and you can spot the factors?</strong>
+        Factor it. <strong>Need vertex form?</strong> Complete the
+        square. <strong>Anything else, or you're stuck?</strong>
+        Quadratic formula always works.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §08 — DISCRIMINANT
+===================================================================== -->
+<section id="disc">
+  <div class="container">
+    <h2><span class="num">§08</span>The discriminant — predict before you solve</h2>
+
+    <p>
+      Look at the quadratic formula again. The piece under the square
+      root sign has a name: the <strong>discriminant</strong>. It is
+      usually denoted by the Greek letter $\Delta$ (capital delta).
+    </p>
+
+    <div class="eq-display" style="font-size: 1.4em; text-align: center;">
+      $\Delta = \color{#6fc2c2}b^{\,2} - 4\color{#ef8666}a\,\color{#e0b056}c$
+    </div>
+
+    <p>
+      Why does anyone care about it on its own? Because the
+      discriminant tells you, <em>before you finish solving</em>,
+      how many real roots the quadratic has — and therefore where
+      the parabola sits relative to the x-axis. Three cases:
+    </p>
+
+    <div class="disc-three">
+      <div class="disc-card pos">
+        <h4>IF Δ &gt; 0</h4>
+        <div class="roots-count">2<em>roots</em></div>
+        <p style="margin: 0; color: var(--paper-soft);">
+          A positive number has two square roots, so you get
+          $\sqrt{\Delta}$ as a real value, and $\pm\sqrt{\Delta}$
+          gives two different answers. The parabola crosses the
+          x-axis at two distinct points.
+        </p>
+      </div>
+
+      <div class="disc-card zero">
+        <h4>IF Δ = 0</h4>
+        <div class="roots-count">1<em>root</em></div>
+        <p style="margin: 0; color: var(--paper-soft);">
+          $\sqrt{0} = 0$, so $\pm 0$ collapses both branches into the
+          same answer. The parabola just barely touches the x-axis at
+          one point — that touching point is also the vertex.
+        </p>
+      </div>
+
+      <div class="disc-card neg">
+        <h4>IF Δ &lt; 0</h4>
+        <div class="roots-count">0<em>real roots</em></div>
+        <p style="margin: 0; color: var(--paper-soft);">
+          You can't take the square root of a negative number (with
+          real numbers, anyway). The parabola never touches the
+          x-axis — it floats entirely above it (if <span class="va">a</span>&gt;0)
+          or entirely below it (if <span class="va">a</span>&lt;0).
+        </p>
+      </div>
+    </div>
+
+    <p>
+      So before doing any heavy lifting, compute $\Delta$. It costs
+      you one multiplication and one subtraction, and tells you
+      whether the rest of the work is even worth doing — or whether
+      there are no real solutions to find.
+    </p>
+
+    <div class="callout tip">
+      <h4>SANITY CHECK BEFORE YOU FACTOR</h4>
+      <p>
+        If you suspect a quadratic factors nicely, check that
+        $\Delta$ is a perfect square (like $1, 4, 9, 16, 25, 36, 49…$).
+        If it is, the roots will be rational and factoring will work.
+        If $\Delta$ is, say, $7$ or $20$, the roots will involve
+        $\sqrt{7}$ or $\sqrt{20}$ — don't waste time hunting for
+        whole-number factors; reach for the formula.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §09 — VERTEX
+===================================================================== -->
+<section id="vertex">
+  <div class="container">
+    <h2><span class="num">§09</span>Finding the vertex without rewriting</h2>
+
+    <p>
+      If you have the parabola in <em>vertex form</em>, the vertex
+      stares you in the face. But what if you only have standard
+      form, and converting feels like a chore? There is a shortcut.
+    </p>
+
+    <div class="eq-display" style="font-size: 1.4em; text-align: center; padding: 2em;">
+      <span class="vv">h</span> $= \dfrac{-\color{#6fc2c2}b}{2\,\color{#ef8666}a}\;\;$ then $\;\;$<span class="vv">k</span> $= y$ at $x = $<span class="vv">h</span>
+    </div>
+
+    <p>
+      Two steps. The x-coordinate of the vertex is always
+      $-$<span class="vb">b</span>$\,/\,(2\,$<span class="va">a</span>$)$.
+      The y-coordinate is then whatever the function spits out at
+      that $x$. Plug in, evaluate, done.
+    </p>
+
+    <div class="card elev">
+      <h4>EXAMPLE</h4>
+      <p>Find the vertex of $y = 2x^2 - 8x + 1$.</p>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Identify <span class="va">a</span> and <span class="vb">b</span></div>
+            <div class="math"><span class="va">a = 2</span>, <span class="vb">b = −8</span></div>
+            <div class="why">We don't need <span class="vc">c</span> to find the vertex's x-coordinate.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Compute <span class="vv">h</span> = −<span class="vb">b</span> / (2<span class="va">a</span>)</div>
+            <div class="math"><span class="vv">h</span> $= \dfrac{-(-8)}{2(2)} = \dfrac{8}{4} = 2$</div>
+            <div class="why">
+              Two negatives → positive in the numerator.
+              So the vertex sits at $x = 2$.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Compute <span class="vv">k</span> by plugging x = 2 into the equation</div>
+            <div class="math"><span class="vv">k</span> $= 2(2)^2 - 8(2) + 1$</div>
+            <div class="why">Substitute carefully. Always use parentheses.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Simplify one piece at a time</div>
+            <div class="math">$= 2(4) - 16 + 1 = 8 - 16 + 1 = -7$</div>
+            <div class="why">$(2)^2 = 4$, then $2 \times 4 = 8$. Then $8 - 16 = -8$, then $-8 + 1 = -7$.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Write the vertex as an ordered pair</div>
+            <div class="math">Vertex $= ($<span class="vv">2</span>, <span class="vv">−7</span>$)$</div>
+            <div class="why">Lowest point of the parabola (since <span class="va">a</span> = 2 &gt; 0 → opens up).</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout aside">
+      <h4>WHERE DOES −b/(2a) COME FROM?</h4>
+      <p>
+        It's not a magic formula. The parabola is symmetric, so the
+        vertex sits exactly halfway between the two roots. The
+        quadratic formula gives the roots as
+        $\frac{-b \pm \sqrt{\Delta}}{2a}$. Average those two roots —
+        the $\pm\sqrt{\Delta}$ parts cancel — and what's left is
+        $\frac{-b}{2a}$. The vertex sits on the axis of symmetry,
+        and that's where the axis of symmetry is.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §10 — TRANSFORMATIONS
+===================================================================== -->
+<section id="transform">
+  <div class="container">
+    <h2><span class="num">§10</span>How the numbers move and shape the curve</h2>
+
+    <p>
+      Vertex form is the friendliest for understanding what each
+      parameter does to the picture. Start from the simplest possible
+      parabola, $y = x^2$, which has vertex at the origin $(0, 0)$
+      and opens upward. Then watch what happens as we add ingredients.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4 style="color: var(--c-a);">Change <span class="va">a</span></h4>
+        <p style="margin: 0;">
+          $y = $<span class="va">a</span>$x^2$ — large $|$<span class="va">a</span>$|$ makes the parabola
+          <strong>narrower</strong> (it grows fast as $x$ moves away from the vertex).
+          Small $|$<span class="va">a</span>$|$ makes it <strong>wider</strong> (it grows slowly).
+          Flip the sign and the parabola flips upside down.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="color: var(--c-vertex);">Change <span class="vv">h</span></h4>
+        <p style="margin: 0;">
+          $y = (x - $<span class="vv">h</span>$)^2$ — shifts the parabola
+          <strong>horizontally</strong>. Positive <span class="vv">h</span>
+          moves it right; negative <span class="vv">h</span> moves it left.
+          (Remember the minus sign inside the parentheses — it flips the
+          sense of <span class="vv">h</span>.)
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="color: var(--c-vertex);">Change <span class="vv">k</span></h4>
+        <p style="margin: 0;">
+          $y = x^2 + $<span class="vv">k</span> — shifts the parabola
+          <strong>vertically</strong>. Positive <span class="vv">k</span> lifts
+          it up; negative <span class="vv">k</span> lowers it. No sign
+          trickery here — what you see is what you get.
+        </p>
+      </div>
+    </div>
+
+    <p>
+      Put all three together —
+      $y = $<span class="va">a</span>$(x - $<span class="vv">h</span>$)^2 + $<span class="vv">k</span> —
+      and you can place the parabola anywhere, in any orientation, with
+      any width. Three knobs, infinite parabolas.
+    </p>
+
+    <div class="callout warn">
+      <h4>THE ONE SIGN TRAP, AGAIN</h4>
+      <p>
+        $y = (x - 3)^2$ has its vertex at $x = +3$ (not $-3$).
+        $y = (x + 3)^2$ has its vertex at $x = -3$ (not $+3$). The
+        formula written in vertex form is
+        $y = a(x - $<span class="vv">h</span>$)^2 + $<span class="vv">k</span> —
+        with a <em>minus</em> in front of <span class="vv">h</span>. So
+        whatever number you see being added or subtracted inside the
+        parentheses, the vertex's x-coordinate is the <strong>opposite
+        sign</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §11 — SIDEWAYS AND TILTED
+===================================================================== -->
+<section id="orient">
+  <div class="container">
+    <h2><span class="num">§11</span>Sideways &amp; tilted — when parabolas turn</h2>
+
+    <p class="lede">
+      Every parabola we've drawn so far opens up or down. That's a
+      consequence of writing equations as $y = f(x)$ — $y$ on the
+      left, $x$ on the right. But there's no rule in nature saying
+      a parabola must open vertically. Let's see what happens when
+      we turn it.
+    </p>
+
+    <h3>The four cardinal directions</h3>
+
+    <p>
+      Watch what flips when we swap which variable is squared:
+    </p>
+
+    <div class="card-grid">
+      <div class="form-card">
+        <h4 style="color: var(--c-curve);">↑ OPENS UP</h4>
+        <div class="eq" style="font-size: 1.1em;">$y = \color{#ef8666}{a}x^2 + \color{#6fc2c2}{b}x + \color{#e0b056}{c}$</div>
+        <p class="desc">
+          $x$ is squared, $y$ is alone. Axis of symmetry: vertical.
+          Opens up when <span class="va">a &gt; 0</span>.
+        </p>
+      </div>
+      <div class="form-card">
+        <h4 style="color: var(--c-a);">↓ OPENS DOWN</h4>
+        <div class="eq" style="font-size: 1.1em;">$y = \color{#ef8666}{a}x^2 + \color{#6fc2c2}{b}x + \color{#e0b056}{c}$</div>
+        <p class="desc">
+          Same equation, but with <span class="va">a &lt; 0</span>.
+          The negative leading coefficient flips it upside down.
+        </p>
+      </div>
+      <div class="form-card">
+        <h4 style="color: var(--c-c);">→ OPENS RIGHT</h4>
+        <div class="eq" style="font-size: 1.1em;">$x = \color{#ef8666}{a}y^2 + \color{#6fc2c2}{b}y + \color{#e0b056}{c}$</div>
+        <p class="desc">
+          Now $y$ is squared and $x$ is alone. Axis of symmetry:
+          horizontal. Opens right when <span class="va">a &gt; 0</span>.
+        </p>
+      </div>
+      <div class="form-card">
+        <h4 style="color: var(--c-vertex);">← OPENS LEFT</h4>
+        <div class="eq" style="font-size: 1.1em;">$x = \color{#ef8666}{a}y^2 + \color{#6fc2c2}{b}y + \color{#e0b056}{c}$</div>
+        <p class="desc">
+          Same as opens right, but with <span class="va">a &lt; 0</span>.
+        </p>
+      </div>
+    </div>
+
+    <p>
+      The pattern is simple: <strong>whichever variable is squared
+      decides the orientation</strong>.
+    </p>
+
+    <p>
+      $x$ squared → parabola opens vertically (up or down). $y$ squared
+      → parabola opens horizontally (right or left). The sign of the
+      leading coefficient picks which of the two directions it is.
+    </p>
+
+    <h3>A picture of all four</h3>
+
+    <div class="card" style="text-align: center;">
+      <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+        <!-- Axes through center -->
+        <line x1="0" y1="180" x2="700" y2="180" stroke="#3a4151" stroke-width="1"/>
+        <line x1="350" y1="0" x2="350" y2="360" stroke="#3a4151" stroke-width="1"/>
+        <!-- Up: y = 0.04x^2 - 60, vertex at (0, -60) relative => (350, 240) -->
+        <path d="M 250 60 Q 350 420 450 60" fill="none" stroke="#94d9a5" stroke-width="2.5"/>
+        <text x="455" y="55" fill="#94d9a5" font-family="JetBrains Mono" font-size="11">y = x²</text>
+        <!-- Down: vertex flipped -->
+        <path d="M 250 300 Q 350 -60 450 300" fill="none" stroke="#ef8666" stroke-width="2.5"/>
+        <text x="455" y="305" fill="#ef8666" font-family="JetBrains Mono" font-size="11">y = −x²</text>
+        <!-- Right: x = y^2, vertex at left -->
+        <path d="M 60 80 Q 420 180 60 280" fill="none" stroke="#e0b056" stroke-width="2.5"/>
+        <text x="6" y="76" fill="#e0b056" font-family="JetBrains Mono" font-size="11">x = y²</text>
+        <!-- Left: x = -y^2 -->
+        <path d="M 640 80 Q 280 180 640 280" fill="none" stroke="#d978c8" stroke-width="2.5"/>
+        <text x="590" y="76" fill="#d978c8" font-family="JetBrains Mono" font-size="11">x = −y²</text>
+        <!-- Origin label -->
+        <circle cx="350" cy="180" r="3" fill="#7c7869"/>
+        <text x="356" y="200" fill="#7c7869" font-family="JetBrains Mono" font-size="10">origin</text>
+      </svg>
+    </div>
+
+    <h3>Sideways parabolas aren't functions of x</h3>
+
+    <p>
+      A sideways parabola like $x = y^2 + 2y - 3$ is a perfectly
+      legitimate curve, but it isn't a <em>function</em> of $x$. If
+      you draw a vertical line anywhere through it, the line will
+      generally cross the curve <strong>twice</strong> — meaning
+      there are two y-values for the same x-value. This is the
+      <em>vertical line test</em> failing.
+    </p>
+
+    <p>
+      But the curve <em>is</em> a function of $y$: every $y$-value
+      produces exactly one $x$-value. So it's a function — just one
+      with the input on the y-axis instead of the x-axis. The rest
+      of the anatomy (vertex, axis of symmetry, roots, intercepts)
+      works exactly the same, just rotated $90°$.
+    </p>
+
+    <div class="callout warn">
+      <h4>THE "ROOTS" CHANGE ADDRESS</h4>
+      <p>
+        For an up-or-down parabola, "roots" mean where the curve
+        crosses the <em>x-axis</em> (because that's where $y = 0$).
+        For a sideways parabola, the natural analog is where the
+        curve crosses the <em>y-axis</em> — where $x = 0$. Same
+        concept, but the axis you read off changes.
+      </p>
+    </div>
+
+    <h3>At an arbitrary angle</h3>
+
+    <p>
+      What if the parabola is tilted at $30°$, or $45°$, or any
+      angle that isn't a multiple of $90°$? Then neither $x^2$ alone
+      nor $y^2$ alone is enough. The equation needs a new ingredient
+      — a <em>cross-term</em> with both variables multiplied
+      together: $xy$.
+    </p>
+
+    <div class="eq-display" style="font-size: 1.25em; text-align: center; padding: 2em 1em;">
+      <span class="label">General conic form (handles any rotation)</span>
+      $\color{#ef8666}{A}x^2 + \color{#d978c8}{B}\,xy + \color{#6fc2c2}{C}y^2 + \color{#e0b056}{D}x + \color{#e0b056}{E}y + F = 0$
+    </div>
+
+    <p>
+      This is the general equation for any <strong>conic section</strong>
+      — parabola, ellipse, hyperbola, or circle — in <em>any</em>
+      orientation. The key new coefficient is
+      $\color{#d978c8}{B}$, the number in front of the $xy$ term:
+    </p>
+
+    <p>
+      When $\color{#d978c8}{B} = 0$, the curve is aligned with the
+      axes (opens straight up, down, left, or right). When
+      $\color{#d978c8}{B} \neq 0$, the curve is <strong>tilted</strong>.
+      The bigger $|\color{#d978c8}{B}|$ is, the more rotation the
+      equation is encoding.
+    </p>
+
+    <div class="callout aside">
+      <h4>WHY THE xy TERM CAUSES ROTATION</h4>
+      <p>
+        Without going into the linear algebra: if you take a "standard"
+        upright parabola $y = x^2$ and rotate the whole coordinate
+        plane by an angle $\theta$, then substitute the rotated $x$
+        and $y$ back in, you'll get an expression with $\cos(\theta)$
+        and $\sin(\theta)$ multiplied into all the terms. The new
+        cross-term that appears is proportional to
+        $\sin(\theta)\cos(\theta)$ — which is zero only when
+        $\theta = 0°, 90°, 180°,$ or $270°$. For any other angle, a
+        non-zero $xy$ term shows up. So the rotation literally
+        <em>creates</em> the cross-term out of the original equation.
+      </p>
+    </div>
+
+    <h3>Try it — rotate the parabola</h3>
+
+    <p>
+      Below, drag the angle slider to rotate $y = x^2$ smoothly from
+      $0°$ all the way around. Watch the equation: at $0°, 90°, 180°,$
+      and $270°$ the $xy$ coefficient sits at zero; at any angle in
+      between, the cross-term comes alive.
+    </p>
+
+    <div class="lab">
+      <div class="lab-grid">
+        <div>
+          <svg id="rot-plot" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <g id="rot-grid"></g>
+            <line x1="0" y1="250" x2="500" y2="250" stroke="#3a4151" stroke-width="1.2"/>
+            <line x1="250" y1="0" x2="250" y2="500" stroke="#3a4151" stroke-width="1.2"/>
+            <text x="490" y="245" fill="#7c7869" font-size="11" font-family="JetBrains Mono" text-anchor="end">x</text>
+            <text x="256" y="14" fill="#7c7869" font-size="11" font-family="JetBrains Mono">y</text>
+            <!-- "Ghost" upright parabola for reference -->
+            <path id="rot-ghost" d="" fill="none" stroke="#94d9a5" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+            <!-- Rotated parabola -->
+            <path id="rot-curve" d="" fill="none" stroke="#94d9a5" stroke-width="2.5"/>
+            <!-- Axis-of-symmetry indicator -->
+            <line id="rot-axis" x1="250" y1="250" x2="250" y2="0" stroke="#d978c8" stroke-width="1" stroke-dasharray="4,4" opacity="0.6"/>
+            <!-- Vertex -->
+            <circle id="rot-vertex" cx="250" cy="250" r="5" fill="#d978c8"/>
+          </svg>
+        </div>
+
+        <div>
+          <div class="slider-row">
+            <label style="color: var(--accent);">θ</label>
+            <input type="range" id="slider-theta" min="0" max="360" step="1" value="0">
+            <span class="val" id="val-theta">0°</span>
+          </div>
+          <p style="font-size: 0.85em; color: var(--paper-faint); margin-top: -0.5em;">
+            rotation angle (degrees)
+          </p>
+
+          <p style="font-family: var(--font-mono); font-size: 12px; color: var(--paper-faint); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 2em;">Resulting equation</p>
+          <div class="eq-display" style="margin: 0.4em 0; font-size: 0.95em;">
+            <span id="r-rot-eq">x² − y = 0</span>
+          </div>
+
+          <div class="readout" style="margin-top: 1em;">
+            <div class="row">
+              <span><dt>A (x²)</dt></span>
+              <span><dd id="r-rot-A" style="color: var(--c-a);">1.00</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>B (xy)</dt></span>
+              <span><dd id="r-rot-B" style="color: var(--c-vertex);">0.00</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>C (y²)</dt></span>
+              <span><dd id="r-rot-C" style="color: var(--c-b);">0.00</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>D (x)</dt></span>
+              <span><dd id="r-rot-D" style="color: var(--c-c);">0.00</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>E (y)</dt></span>
+              <span><dd id="r-rot-E" style="color: var(--c-c);">−1.00</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>orientation</dt></span>
+              <span><dd id="r-rot-orient">opens up</dd></span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.9em; color: var(--paper-soft); margin-top: 1.5em;">
+            <strong>Watch B:</strong> it's at zero only at the four
+            cardinal angles. Everywhere else, the $xy$ term is the
+            fingerprint of the rotation.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <h4>YOU WON'T BE TESTED ON ROTATED CONICS (USUALLY)</h4>
+      <p>
+        At the high-school level, you'll almost always work with
+        parabolas that open up, down, left, or right — never tilted.
+        But knowing that tilted parabolas exist, and that the $xy$
+        term is what makes them tilt, demystifies a lot of weirder
+        equations you might see later in calculus or physics. The
+        big takeaway: the form of the equation tells you the
+        orientation of the curve, and there are no exceptions.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §12 — INTERACTIVE LAB
+===================================================================== -->
+<section id="lab">
+  <div class="container">
+    <h2><span class="num">§12</span>The parabola lab</h2>
+
+    <p>
+      Slide the knobs and watch the parabola change. Every value in the
+      readout below the sliders is recomputed live — including the
+      discriminant, the roots (if any), and the vertex.
+    </p>
+
+    <div class="lab">
+      <div class="lab-grid">
+        <div>
+          <svg id="lab-plot" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid -->
+            <g id="grid"></g>
+            <!-- Axes -->
+            <line x1="0" y1="250" x2="500" y2="250" stroke="#3a4151" stroke-width="1.2"/>
+            <line x1="250" y1="0" x2="250" y2="500" stroke="#3a4151" stroke-width="1.2"/>
+            <!-- Axis labels -->
+            <text x="490" y="245" fill="#7c7869" font-size="11" font-family="JetBrains Mono" text-anchor="end">x</text>
+            <text x="256" y="14" fill="#7c7869" font-size="11" font-family="JetBrains Mono">y</text>
+            <!-- Curve -->
+            <path id="lab-curve" d="" fill="none" stroke="#94d9a5" stroke-width="2.5"/>
+            <!-- Vertex -->
+            <circle id="lab-vertex" cx="250" cy="250" r="5" fill="#d978c8"/>
+            <!-- Roots -->
+            <circle id="lab-root1" cx="-100" cy="250" r="5" fill="#efd166"/>
+            <circle id="lab-root2" cx="-100" cy="250" r="5" fill="#efd166"/>
+            <!-- y-intercept -->
+            <circle id="lab-yint" cx="250" cy="250" r="4" fill="#e0b056"/>
+            <!-- Axis of symmetry -->
+            <line id="lab-axis" x1="250" y1="0" x2="250" y2="500" stroke="#d978c8" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+          </svg>
+        </div>
+
+        <div>
+          <div class="slider-row">
+            <label class="va">a</label>
+            <input type="range" id="slider-a" class="slider-a" min="-3" max="3" step="0.1" value="1">
+            <span class="val" id="val-a">1.0</span>
+          </div>
+          <div class="slider-row">
+            <label class="vb">b</label>
+            <input type="range" id="slider-b" class="slider-b" min="-10" max="10" step="0.1" value="0">
+            <span class="val" id="val-b">0.0</span>
+          </div>
+          <div class="slider-row">
+            <label class="vc">c</label>
+            <input type="range" id="slider-c" class="slider-c" min="-10" max="10" step="0.1" value="0">
+            <span class="val" id="val-c">0.0</span>
+          </div>
+
+          <div class="readout">
+            <div class="row">
+              <span><dt>equation</dt></span>
+              <span><dd id="r-eq" style="color: var(--paper);">y = x²</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>opens</dt></span>
+              <span><dd id="r-opens">upward</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>vertex</dt></span>
+              <span><dd id="r-vertex" style="color: var(--c-vertex);">(0, 0)</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>y-intercept</dt></span>
+              <span><dd id="r-yint" style="color: var(--c-c);">(0, 0)</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>Δ (discriminant)</dt></span>
+              <span><dd id="r-disc">0</dd></span>
+            </div>
+            <div class="row">
+              <span><dt>roots</dt></span>
+              <span><dd id="r-roots" style="color: var(--c-root);">x = 0</dd></span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.9em; color: var(--paper-soft); margin-top: 1.5em;">
+            <strong>Try:</strong> flip <span class="va">a</span> negative —
+            the parabola turns upside down. Set <span class="vb">b = 0</span> —
+            the vertex snaps to the y-axis. Drag <span class="vc">c</span> —
+            the whole curve slides up or down.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §13 — WORKED EXAMPLES
+===================================================================== -->
+<section id="worked">
+  <div class="container">
+    <h2><span class="num">§13</span>Three worked examples, end to end</h2>
+
+    <p>
+      Each example below is solved fully, with every step labeled. The
+      goal is not for you to memorize them — the goal is for the
+      <em>pattern</em> to become obvious after the third one.
+    </p>
+
+    <!-- Worked Example 1 -->
+    <h3>Example 1 — Factor it</h3>
+
+    <p>
+      Solve $x^2 + 4x - 12 = 0$ and sketch its parabola.
+    </p>
+
+    <div class="card elev">
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Identify a, b, c</div>
+            <div class="math"><span class="va">a = 1</span>, <span class="vb">b = 4</span>, <span class="vc">c = −12</span></div>
+            <div class="why">When there's no number in front of $x^2$, <span class="va">a = 1</span>.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Check the discriminant for sanity</div>
+            <div class="math">$\Delta = (4)^2 - 4(1)(-12) = 16 + 48 = 64$</div>
+            <div class="why">$64$ is a perfect square ($8^2$), so factoring will work cleanly.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Find two numbers</div>
+            <div class="math">multiplying to <span class="vc">−12</span> and adding to <span class="vb">4</span></div>
+            <div class="why">Try pairs: $(6, -2)$ → product $-12$ ✓, sum $4$ ✓. Done.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Factored form</div>
+            <div class="math">$(x + 6)(x - 2) = 0$</div>
+            <div class="why">Signs flip from the numbers found above.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Roots</div>
+            <div class="math">$x = -6\;$ or $\;x = 2$</div>
+            <div class="why">Zero product: each factor in turn = 0.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Vertex x-coordinate</div>
+            <div class="math"><span class="vv">h</span> $= \dfrac{-(4)}{2(1)} = -2$</div>
+            <div class="why">Halfway between the two roots ($-6$ and $2$), as expected.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Vertex y-coordinate</div>
+            <div class="math"><span class="vv">k</span> $= (-2)^2 + 4(-2) - 12 = 4 - 8 - 12 = -16$</div>
+            <div class="why">Plug $x = -2$ back into the original equation.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Summary</div>
+            <div class="math">
+              Vertex $($<span class="vv">−2</span>, <span class="vv">−16</span>$)$,
+              roots $x = $<span class="vr">−6</span>, <span class="vr">2</span>,
+              y-intercept $(0, $<span class="vc">−12</span>$)$, opens up.
+            </div>
+            <div class="why">Everything you need to sketch the parabola.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Worked Example 2 -->
+    <h3>Example 2 — Use the formula</h3>
+
+    <p>
+      Solve $3x^2 - x - 5 = 0$.
+    </p>
+
+    <div class="card elev">
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Identify a, b, c</div>
+            <div class="math"><span class="va">a = 3</span>, <span class="vb">b = −1</span>, <span class="vc">c = −5</span></div>
+            <div class="why">The middle term $-x$ means <span class="vb">b = −1</span>, not $-x$ itself.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Discriminant</div>
+            <div class="math">$\Delta = (-1)^2 - 4(3)(-5) = 1 + 60 = 61$</div>
+            <div class="why">$61$ is not a perfect square — so the roots will be irrational. Don't try to factor; use the formula.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Apply the formula</div>
+            <div class="math">$x = \dfrac{-(-1) \pm \sqrt{61}}{2(3)} = \dfrac{1 \pm \sqrt{61}}{6}$</div>
+            <div class="why">Two negatives in the numerator becoming positive: $-(-1) = 1$.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">The two roots</div>
+            <div class="math">$x \approx \dfrac{1 + 7.81}{6} \approx 1.47\;\;$ or $\;\;x \approx \dfrac{1 - 7.81}{6} \approx -1.13$</div>
+            <div class="why">$\sqrt{61} \approx 7.81$. Decimal approximations are perfectly fine when the exact form is ugly.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Worked Example 3 -->
+    <h3>Example 3 — Complete the square to get vertex form</h3>
+
+    <p>
+      Rewrite $y = x^2 - 6x + 11$ in vertex form, then state the vertex.
+    </p>
+
+    <div class="card elev">
+      <ol class="steps">
+        <li>
+          <div>
+            <div class="what">Group the x-terms</div>
+            <div class="math">$y = (x^2 - 6x) + 11$</div>
+            <div class="why">Pull the constant outside; we'll deal with it separately.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Take half of b, square it</div>
+            <div class="math">half of $-6$ is $-3$, and $(-3)^2 = 9$</div>
+            <div class="why">This is the number that will complete the square.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Add and subtract that number inside</div>
+            <div class="math">$y = (x^2 - 6x + 9 - 9) + 11$</div>
+            <div class="why">
+              We add $9$ to create the square, then subtract $9$ to keep
+              the equation unchanged. This is the key move — adding zero
+              in disguise.
+            </div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Factor the perfect square, combine constants</div>
+            <div class="math">$y = (x - 3)^2 + 2$</div>
+            <div class="why">$x^2 - 6x + 9 = (x - 3)^2$, and $-9 + 11 = 2$. Done.</div>
+          </div>
+        </li>
+        <li>
+          <div>
+            <div class="what">Read off the vertex</div>
+            <div class="math">Vertex $= ($<span class="vv">3</span>, <span class="vv">2</span>$)$</div>
+            <div class="why">
+              Remember the sign trap: $(x - 3)^2$ gives vertex
+              x-coordinate $+3$, not $-3$.
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout tip">
+      <h4>NOTICE THE PATTERN</h4>
+      <p>
+        Every quadratic problem reduces to: identify
+        <span class="va">a</span>, <span class="vb">b</span>,
+        <span class="vc">c</span> → check the discriminant → pick a
+        method → carry the signs carefully → solve. That's the whole
+        loop. Once it becomes automatic, these problems stop feeling
+        like puzzles and start feeling like a recipe.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §14 — PRACTICE
+===================================================================== -->
+<section id="practice">
+  <div class="container">
+    <h2><span class="num">§14</span>Practice — try, then peek</h2>
+
+    <p>
+      Each problem below has a hidden solution. Try it first; then tap
+      the button to compare. Don't worry if your work looks different
+      — sometimes there are multiple valid paths.
+    </p>
+
+    <div class="practice">
+      <div class="q"><strong>1.</strong> Solve $x^2 - 7x + 10 = 0$ by factoring.</div>
+      <details>
+        <summary>Show solution</summary>
+        <div class="ans">
+          <p>Find two numbers that multiply to <span class="vc">10</span> and add to <span class="vb">−7</span>: that's $-2$ and $-5$.</p>
+          <p>$(x - 2)(x - 5) = 0$, so $x = 2$ or $x = 5$.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice">
+      <div class="q"><strong>2.</strong> Use the quadratic formula to solve $2x^2 + 7x + 3 = 0$.</div>
+      <details>
+        <summary>Show solution</summary>
+        <div class="ans">
+          <p><span class="va">a = 2</span>, <span class="vb">b = 7</span>, <span class="vc">c = 3</span>.</p>
+          <p>$\Delta = 7^2 - 4(2)(3) = 49 - 24 = 25$.</p>
+          <p>$x = \dfrac{-7 \pm \sqrt{25}}{4} = \dfrac{-7 \pm 5}{4}$.</p>
+          <p>So $x = -\tfrac{1}{2}$ or $x = -3$.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice">
+      <div class="q"><strong>3.</strong> Find the vertex of $y = -x^2 + 4x + 1$.</div>
+      <details>
+        <summary>Show solution</summary>
+        <div class="ans">
+          <p><span class="va">a = −1</span>, <span class="vb">b = 4</span>.</p>
+          <p><span class="vv">h</span> $= \dfrac{-(4)}{2(-1)} = \dfrac{-4}{-2} = 2$.</p>
+          <p><span class="vv">k</span> $= -(2)^2 + 4(2) + 1 = -4 + 8 + 1 = 5$.</p>
+          <p>Vertex: $($<span class="vv">2</span>, <span class="vv">5</span>$)$. Since <span class="va">a &lt; 0</span>, this is the <em>maximum</em> point.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice">
+      <div class="q"><strong>4.</strong> How many real roots does $x^2 - 2x + 5 = 0$ have?</div>
+      <details>
+        <summary>Show solution</summary>
+        <div class="ans">
+          <p>Compute the discriminant: $\Delta = (-2)^2 - 4(1)(5) = 4 - 20 = -16$.</p>
+          <p>Since $\Delta &lt; 0$, there are <strong>no real roots</strong>. The parabola floats entirely above the x-axis.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice">
+      <div class="q"><strong>5.</strong> Convert $y = x^2 + 8x + 10$ to vertex form.</div>
+      <details>
+        <summary>Show solution</summary>
+        <div class="ans">
+          <p>Half of $8$ is $4$, and $4^2 = 16$.</p>
+          <p>$y = (x^2 + 8x + 16) - 16 + 10$</p>
+          <p>$y = (x + 4)^2 - 6$.</p>
+          <p>Vertex: $($<span class="vv">−4</span>, <span class="vv">−6</span>$)$.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice">
+      <div class="q"><strong>6.</strong> A ball thrown straight up has height $h(t) = -5t^2 + 20t + 1$ (meters, $t$ in seconds). When does it reach maximum height? What is the maximum height?</div>
+      <details>
+        <summary>Show solution</summary>
+        <div class="ans">
+          <p>This is asking for the vertex. <span class="va">a = −5</span>, <span class="vb">b = 20</span>.</p>
+          <p>$t_{\text{vertex}} = \dfrac{-(20)}{2(-5)} = \dfrac{-20}{-10} = 2$ seconds.</p>
+          <p>$h(2) = -5(2)^2 + 20(2) + 1 = -20 + 40 + 1 = 21$ meters.</p>
+          <p>The ball reaches a maximum height of $21$ m at $t = 2$ s.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §15 — REAL WORLD
+===================================================================== -->
+<section id="world">
+  <div class="container">
+    <h2><span class="num">§15</span>Where these show up in real life</h2>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>PROJECTILE MOTION</h4>
+        <p style="margin: 0;">
+          Anything thrown, kicked, launched, or fired through the air
+          follows a parabolic path (ignoring air resistance). The vertex
+          of that parabola is the moment of peak height; the roots are
+          when it left the ground and when it lands. The quadratic
+          formula gives you the time of impact.
+        </p>
+      </div>
+      <div class="card">
+        <h4>SATELLITE DISHES &amp; HEADLIGHTS</h4>
+        <p style="margin: 0;">
+          The cross-section of a parabolic dish or reflector is —
+          unsurprisingly — a parabola. Parabolas have a magical
+          geometric property: every ray parallel to the axis bounces
+          off the inside and converges to a single point (the
+          <em>focus</em>). Headlights run this backward: put a bulb at
+          the focus and the dish spits out parallel beams.
+        </p>
+      </div>
+      <div class="card">
+        <h4>OPTIMIZATION</h4>
+        <p style="margin: 0;">
+          If profit, area, distance, or time depends on a quadratic
+          expression, finding the vertex tells you the maximum or
+          minimum value. "How wide should I cut the fence so the
+          rectangular area is largest?" — that's a parabola vertex
+          problem.
+        </p>
+      </div>
+      <div class="card">
+        <h4>BRIDGES &amp; ARCHES</h4>
+        <p style="margin: 0;">
+          The cables of a suspension bridge hang in a curve very close
+          to a parabola when the load is evenly distributed across the
+          deck. Many decorative arches are designed as parabolas
+          because they distribute weight efficiently.
+        </p>
+      </div>
+      <div class="card">
+        <h4>SPINNING LIQUIDS</h4>
+        <p style="margin: 0;">
+          Spin a bucket of water steadily — the surface of the water
+          forms a parabola. Astronomers use this to grind giant
+          telescope mirrors: spin liquid mercury, let it harden,
+          you've got a parabolic mirror with no machining required.
+        </p>
+      </div>
+      <div class="card">
+        <h4>PHYSICS — KINETIC ENERGY</h4>
+        <p style="margin: 0;">
+          The kinetic energy of a moving object is
+          $\tfrac{1}{2}mv^2$ — a quadratic in $v$. That's why a car
+          going twice as fast takes four times the distance to stop,
+          not twice. The parabola is right there.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     §16 — CHEAT SHEET
+===================================================================== -->
+<section id="cheat">
+  <div class="container">
+    <h2><span class="num">§16</span>The whole page on one card</h2>
+
+    <p>
+      If you remember nothing else, remember this. Print it, screenshot
+      it, paste it into your notebook. Everything above collapses into
+      these few facts.
+    </p>
+
+    <div class="cheat">
+      <h3 style="margin-top: 0;">Quick reference</h3>
+
+      <div class="cheat-grid">
+        <div class="item">
+          <h4>Standard form</h4>
+          <p>$y = $<span class="va">a</span>$x^2 + $<span class="vb">b</span>$x + $<span class="vc">c</span></p>
+        </div>
+        <div class="item">
+          <h4>Vertex form</h4>
+          <p>$y = $<span class="va">a</span>$(x - $<span class="vv">h</span>$)^2 + $<span class="vv">k</span>$\;$ → vertex at $($<span class="vv">h</span>, <span class="vv">k</span>$)$</p>
+        </div>
+        <div class="item">
+          <h4>Factored form</h4>
+          <p>$y = $<span class="va">a</span>$(x - $<span class="vr">r₁</span>$)(x - $<span class="vr">r₂</span>$)\;$ → roots at <span class="vr">r₁</span>, <span class="vr">r₂</span></p>
+        </div>
+        <div class="item">
+          <h4>Quadratic formula</h4>
+          <p>$x = \dfrac{-\color{#6fc2c2}b \pm \sqrt{\color{#6fc2c2}b^{\,2} - 4\color{#ef8666}a\,\color{#e0b056}c}}{2\,\color{#ef8666}a}$</p>
+        </div>
+        <div class="item">
+          <h4>Discriminant</h4>
+          <p>$\Delta = $<span class="vb">b</span>$^2 - 4$<span class="va">a</span><span class="vc">c</span><br>
+          $\Delta &gt; 0$ → 2 real roots<br>
+          $\Delta = 0$ → 1 real root (the vertex)<br>
+          $\Delta &lt; 0$ → 0 real roots</p>
+        </div>
+        <div class="item">
+          <h4>Vertex shortcut</h4>
+          <p><span class="vv">h</span> $= \dfrac{-\color{#6fc2c2}b}{2\,\color{#ef8666}a}$<br>
+          <span class="vv">k</span> $= $ plug <span class="vv">h</span> into the equation</p>
+        </div>
+        <div class="item">
+          <h4>Opens up or down?</h4>
+          <p><span class="va">a</span> &gt; 0 → opens up (vertex is minimum)<br>
+          <span class="va">a</span> &lt; 0 → opens down (vertex is maximum)</p>
+        </div>
+        <div class="item">
+          <h4>y-intercept</h4>
+          <p>Always $(0, \,$<span class="vc">c</span>$)$ — the constant term, period.</p>
+        </div>
+        <div class="item">
+          <h4>Zero product property</h4>
+          <p>If $A \cdot B = 0$, then $A = 0$ or $B = 0$ (or both). This is what makes factoring work.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout aside">
+      <h4>FINAL ADVICE</h4>
+      <p>
+        Don't trust your head with arithmetic in these problems —
+        write every step on the page. Use parentheses around every
+        substitution. Always carry the sign with the coefficient.
+        And when in doubt, plug the answer back in and check that
+        it actually satisfies the equation. That last habit will
+        save you on every test for the rest of your life.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    A field guide to second-degree equations &amp; parabolas.<br>
+    Built with care, color-coded throughout, no step skipped.
+  </div>
+</footer>
+
+<!-- =====================================================================
+     INTERACTIVE LAB SCRIPT
+===================================================================== -->
+<script>
+(function () {
+  // SVG plot config: viewBox is 500x500, centered at (250,250).
+  // We map math coordinates (xMath, yMath) to SVG with:
+  //   xSvg = 250 + xMath * scale
+  //   ySvg = 250 - yMath * scale
+  // We choose scale so that math x range [-10, 10] fits.
+  const SVG_SIZE = 500;
+  const CX = 250;
+  const CY = 250;
+  const SCALE = 22; // pixels per unit
+  const X_MIN = -10;
+  const X_MAX = 10;
+
+  const sliderA = document.getElementById('slider-a');
+  const sliderB = document.getElementById('slider-b');
+  const sliderC = document.getElementById('slider-c');
+  const valA = document.getElementById('val-a');
+  const valB = document.getElementById('val-b');
+  const valC = document.getElementById('val-c');
+
+  const curve   = document.getElementById('lab-curve');
+  const vertex  = document.getElementById('lab-vertex');
+  const root1   = document.getElementById('lab-root1');
+  const root2   = document.getElementById('lab-root2');
+  const yint    = document.getElementById('lab-yint');
+  const axis    = document.getElementById('lab-axis');
+
+  const rEq     = document.getElementById('r-eq');
+  const rOpens  = document.getElementById('r-opens');
+  const rVertex = document.getElementById('r-vertex');
+  const rYint   = document.getElementById('r-yint');
+  const rDisc   = document.getElementById('r-disc');
+  const rRoots  = document.getElementById('r-roots');
+
+  // Build the gridlines once
+  const grid = document.getElementById('grid');
+  for (let i = X_MIN; i <= X_MAX; i++) {
+    if (i === 0) continue;
+    const xPx = CX + i * SCALE;
+    const yPx = CY - i * SCALE;
+    const v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    v.setAttribute('x1', xPx); v.setAttribute('x2', xPx);
+    v.setAttribute('y1', 0);   v.setAttribute('y2', SVG_SIZE);
+    v.setAttribute('stroke', '#1c2029'); v.setAttribute('stroke-width', '0.6');
+    grid.appendChild(v);
+    const h = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    h.setAttribute('y1', yPx); h.setAttribute('y2', yPx);
+    h.setAttribute('x1', 0);   h.setAttribute('x2', SVG_SIZE);
+    h.setAttribute('stroke', '#1c2029'); h.setAttribute('stroke-width', '0.6');
+    grid.appendChild(h);
+  }
+
+  function fmt(n, decimals = 2) {
+    if (Math.abs(n) < 0.005) return '0';
+    const r = Math.round(n * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    return Number(r).toString();
+  }
+
+  function fmtSigned(n, decimals = 2) {
+    // For displaying b and c in the equation: "+ 2x" or "- 3x"
+    if (Math.abs(n) < 0.005) return null;
+    const sign = n < 0 ? '−' : '+';
+    return sign + ' ' + fmt(Math.abs(n), decimals);
+  }
+
+  function update() {
+    const a = parseFloat(sliderA.value);
+    const b = parseFloat(sliderB.value);
+    const c = parseFloat(sliderC.value);
+
+    valA.textContent = fmt(a, 1);
+    valB.textContent = fmt(b, 1);
+    valC.textContent = fmt(c, 1);
+
+    // Equation string (color-coded for readability)
+    let eqStr = '<span style="color:var(--paper-soft);">y =</span> ';
+    if (Math.abs(a) < 0.01) {
+      eqStr += '<span style="color:var(--paper-faint);">(a ≈ 0, not a quadratic)</span>';
+    } else {
+      if (Math.abs(a - 1) < 0.01)        eqStr += '<span style="color:var(--c-x);">x²</span>';
+      else if (Math.abs(a + 1) < 0.01)   eqStr += '<span style="color:var(--paper-soft);">−</span><span style="color:var(--c-x);">x²</span>';
+      else                                eqStr += '<span style="color:var(--c-a);">' + fmt(a,1) + '</span><span style="color:var(--c-x);">x²</span>';
+
+      const bs = fmtSigned(b, 1);
+      if (bs) eqStr += ' <span style="color:var(--paper-soft);">' + bs[0] + '</span> <span style="color:var(--c-b);">' + bs.slice(2) + '</span><span style="color:var(--c-x);">x</span>';
+
+      const cs = fmtSigned(c, 1);
+      if (cs) eqStr += ' <span style="color:var(--paper-soft);">' + cs[0] + '</span> <span style="color:var(--c-c);">' + cs.slice(2) + '</span>';
+    }
+    rEq.innerHTML = eqStr;
+
+    // Build curve path
+    let d = '';
+    const STEP = 0.05;
+    let started = false;
+    for (let x = X_MIN; x <= X_MAX; x += STEP) {
+      const y = a * x * x + b * x + c;
+      const xPx = CX + x * SCALE;
+      const yPx = CY - y * SCALE;
+      // Clip to SVG bounds (with a small margin)
+      if (yPx < -100 || yPx > SVG_SIZE + 100) { started = false; continue; }
+      if (!started) { d += 'M ' + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' '; started = true; }
+      else          { d += 'L ' + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' '; }
+    }
+    curve.setAttribute('d', d);
+
+    // Opens up/down
+    rOpens.textContent = Math.abs(a) < 0.01 ? '—' : (a > 0 ? 'upward (smile)' : 'downward (frown)');
+
+    // Vertex
+    let vx_math, vy_math;
+    if (Math.abs(a) < 0.01) {
+      vertex.setAttribute('cx', -100);
+      rVertex.textContent = '—';
+      axis.setAttribute('x1', -100); axis.setAttribute('x2', -100);
+    } else {
+      vx_math = -b / (2 * a);
+      vy_math = a * vx_math * vx_math + b * vx_math + c;
+      vertex.setAttribute('cx', CX + vx_math * SCALE);
+      vertex.setAttribute('cy', CY - vy_math * SCALE);
+      rVertex.textContent = '(' + fmt(vx_math) + ', ' + fmt(vy_math) + ')';
+      const axisPx = CX + vx_math * SCALE;
+      axis.setAttribute('x1', axisPx); axis.setAttribute('x2', axisPx);
+    }
+
+    // y-intercept (always at x=0 → y=c)
+    yint.setAttribute('cx', CX);
+    yint.setAttribute('cy', CY - c * SCALE);
+    rYint.textContent = '(0, ' + fmt(c) + ')';
+
+    // Discriminant
+    const disc = b * b - 4 * a * c;
+    rDisc.innerHTML = '<span style="color:' +
+      (disc > 0.005 ? 'var(--c-curve)' : (disc < -0.005 ? 'var(--c-a)' : 'var(--c-c)')) +
+      ';">' + fmt(disc) + '</span>';
+
+    // Roots
+    if (Math.abs(a) < 0.01) {
+      root1.setAttribute('cx', -100); root2.setAttribute('cx', -100);
+      rRoots.innerHTML = '—';
+    } else if (disc < -0.005) {
+      root1.setAttribute('cx', -100); root2.setAttribute('cx', -100);
+      rRoots.innerHTML = '<span style="color:var(--paper-faint);">no real roots</span>';
+    } else if (Math.abs(disc) < 0.005) {
+      const r = -b / (2 * a);
+      root1.setAttribute('cx', CX + r * SCALE); root1.setAttribute('cy', CY);
+      root2.setAttribute('cx', -100);
+      rRoots.innerHTML = '<span style="color:var(--c-root);">x = ' + fmt(r) + '</span> (double)';
+    } else {
+      const sd = Math.sqrt(disc);
+      const r1 = (-b - sd) / (2 * a);
+      const r2 = (-b + sd) / (2 * a);
+      root1.setAttribute('cx', CX + r1 * SCALE); root1.setAttribute('cy', CY);
+      root2.setAttribute('cx', CX + r2 * SCALE); root2.setAttribute('cy', CY);
+      rRoots.innerHTML = '<span style="color:var(--c-root);">x = ' + fmt(r1) + ', ' + fmt(r2) + '</span>';
+    }
+  }
+
+  sliderA.addEventListener('input', update);
+  sliderB.addEventListener('input', update);
+  sliderC.addEventListener('input', update);
+  update();
+})();
+
+
+/* =====================================================================
+   ROOTS-AS-INTERSECTION WIDGET (§06)
+===================================================================== */
+(function () {
+  const SVG_SIZE = 500;
+  const CX = 250, CY = 250;
+  const SCALE = 35;   // pixels per math unit
+  const X_MIN = -3, X_MAX = 7;
+
+  // Fixed parabola: y = 0.4 x^2 - 1.6 x - 1
+  const A = 0.4, B = -1.6, C = -1;
+  // Vertex: x = -B/(2A) = 1.6/0.8 = 2; y = 0.4(4) - 3.2 - 1 = -2.6
+  const VX = -B / (2 * A);
+  const VY = A * VX * VX + B * VX + C;
+
+  const slider = document.getElementById('slider-k');
+  const valK = document.getElementById('val-k');
+  const line = document.getElementById('roots-line');
+  const lineLabel = document.getElementById('roots-line-label');
+  const curve = document.getElementById('roots-curve');
+  const dot1 = document.getElementById('roots-dot1');
+  const dot2 = document.getElementById('roots-dot2');
+  const vertex = document.getElementById('roots-vertex');
+  const rEq = document.getElementById('r-roots-eq');
+  const rRearr = document.getElementById('r-roots-rearr');
+  const rDisc = document.getElementById('r-roots-disc');
+  const rSols = document.getElementById('r-roots-sols');
+
+  const grid = document.getElementById('roots-grid');
+  for (let i = -7; i <= 7; i++) {
+    if (i === 0) continue;
+    const xPx = CX + i * SCALE;
+    const yPx = CY - i * SCALE;
+    const v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    v.setAttribute('x1', xPx); v.setAttribute('x2', xPx);
+    v.setAttribute('y1', 0); v.setAttribute('y2', SVG_SIZE);
+    v.setAttribute('stroke', '#1c2029'); v.setAttribute('stroke-width', '0.6');
+    grid.appendChild(v);
+    const h = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    h.setAttribute('y1', yPx); h.setAttribute('y2', yPx);
+    h.setAttribute('x1', 0); h.setAttribute('x2', SVG_SIZE);
+    h.setAttribute('stroke', '#1c2029'); h.setAttribute('stroke-width', '0.6');
+    grid.appendChild(h);
+  }
+
+  // Draw the parabola once (it doesn't change)
+  let d = '';
+  let started = false;
+  for (let x = X_MIN; x <= X_MAX; x += 0.05) {
+    const y = A * x * x + B * x + C;
+    const xPx = CX + x * SCALE;
+    const yPx = CY - y * SCALE;
+    if (yPx < -100 || yPx > SVG_SIZE + 100) { started = false; continue; }
+    if (!started) { d += 'M ' + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' '; started = true; }
+    else { d += 'L ' + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' '; }
+  }
+  curve.setAttribute('d', d);
+
+  // Vertex marker
+  vertex.setAttribute('cx', CX + VX * SCALE);
+  vertex.setAttribute('cy', CY - VY * SCALE);
+
+  function fmt(n, decimals = 2) {
+    if (Math.abs(n) < 0.005) return '0';
+    return (Math.round(n * Math.pow(10, decimals)) / Math.pow(10, decimals)).toString();
+  }
+
+  function update() {
+    const k = parseFloat(slider.value);
+    valK.textContent = fmt(k, 1);
+
+    // Move the line
+    const yPx = CY - k * SCALE;
+    line.setAttribute('y1', yPx);
+    line.setAttribute('y2', yPx);
+    lineLabel.setAttribute('y', yPx - 8);
+    lineLabel.textContent = 'y = ' + fmt(k, 1);
+
+    // Update equation displays
+    rEq.innerHTML = '0.4x² − 1.6x − 1 = <span style="color:var(--c-vertex);">' + fmt(k, 2) + '</span>';
+    const cNew = C - k;  // 0.4x² - 1.6x + (-1 - k) = 0
+    const cSign = cNew >= 0 ? '+' : '−';
+    rRearr.innerHTML = '0.4x² − 1.6x ' + cSign + ' ' + fmt(Math.abs(cNew), 2) + ' = 0';
+
+    // Discriminant of 0.4x² - 1.6x + (-1 - k) = 0
+    const disc = B * B - 4 * A * cNew;
+    rDisc.innerHTML = '<span style="color:' +
+      (disc > 0.005 ? 'var(--c-curve)' : (disc < -0.005 ? 'var(--c-a)' : 'var(--c-c)')) +
+      ';">' + fmt(disc, 2) + '</span>';
+
+    // Solutions and intersection dots
+    if (disc < -0.005) {
+      dot1.setAttribute('cx', -100);
+      dot2.setAttribute('cx', -100);
+      rSols.innerHTML = '<span style="color:var(--paper-faint);">none (line is below the parabola)</span>';
+    } else if (Math.abs(disc) < 0.005) {
+      const x = -B / (2 * A);
+      dot1.setAttribute('cx', CX + x * SCALE); dot1.setAttribute('cy', yPx);
+      dot2.setAttribute('cx', -100);
+      rSols.innerHTML = '<span style="color:var(--c-root);">x = ' + fmt(x, 2) + '</span> (tangent — line just touches the vertex)';
+    } else {
+      const sd = Math.sqrt(disc);
+      const x1 = (-B - sd) / (2 * A);
+      const x2 = (-B + sd) / (2 * A);
+      dot1.setAttribute('cx', CX + x1 * SCALE); dot1.setAttribute('cy', yPx);
+      dot2.setAttribute('cx', CX + x2 * SCALE); dot2.setAttribute('cy', yPx);
+      rSols.innerHTML = '<span style="color:var(--c-root);">x ≈ ' + fmt(x1, 2) + ', ' + fmt(x2, 2) + '</span>';
+    }
+  }
+
+  slider.addEventListener('input', update);
+  update();
+})();
+
+
+/* =====================================================================
+   ROTATION WIDGET (§11)
+===================================================================== */
+(function () {
+  const SVG_SIZE = 500;
+  const CX = 250, CY = 250;
+  const SCALE = 40;
+  const T_MIN = -2, T_MAX = 2, T_STEP = 0.04;
+
+  const slider = document.getElementById('slider-theta');
+  const valT   = document.getElementById('val-theta');
+  const curve  = document.getElementById('rot-curve');
+  const ghost  = document.getElementById('rot-ghost');
+  const axis   = document.getElementById('rot-axis');
+  const vertex = document.getElementById('rot-vertex');
+  const rEq    = document.getElementById('r-rot-eq');
+  const rA     = document.getElementById('r-rot-A');
+  const rB     = document.getElementById('r-rot-B');
+  const rC     = document.getElementById('r-rot-C');
+  const rD     = document.getElementById('r-rot-D');
+  const rE     = document.getElementById('r-rot-E');
+  const rO     = document.getElementById('r-rot-orient');
+
+  // Grid
+  const grid = document.getElementById('rot-grid');
+  for (let i = -6; i <= 6; i++) {
+    if (i === 0) continue;
+    const xPx = CX + i * SCALE;
+    const yPx = CY - i * SCALE;
+    const v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    v.setAttribute('x1', xPx); v.setAttribute('x2', xPx);
+    v.setAttribute('y1', 0); v.setAttribute('y2', SVG_SIZE);
+    v.setAttribute('stroke', '#1c2029'); v.setAttribute('stroke-width', '0.6');
+    grid.appendChild(v);
+    const h = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    h.setAttribute('y1', yPx); h.setAttribute('y2', yPx);
+    h.setAttribute('x1', 0); h.setAttribute('x2', SVG_SIZE);
+    h.setAttribute('stroke', '#1c2029'); h.setAttribute('stroke-width', '0.6');
+    grid.appendChild(h);
+  }
+
+  // Draw ghost (upright reference parabola) once
+  let dg = '';
+  for (let t = T_MIN; t <= T_MAX; t += T_STEP) {
+    const xPx = CX + t * SCALE;
+    const yPx = CY - (t * t) * SCALE;
+    dg += (t === T_MIN ? 'M ' : 'L ') + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' ';
+  }
+  ghost.setAttribute('d', dg);
+
+  function fmt(n, decimals = 2) {
+    if (Math.abs(n) < 0.005) return '0.00';
+    return n.toFixed(decimals);
+  }
+  function signedTerm(coef, varStr) {
+    if (Math.abs(coef) < 0.005) return null;
+    const abs = Math.abs(coef);
+    const absStr = (Math.abs(abs - 1) < 0.005 && varStr) ? '' : abs.toFixed(2);
+    return { sign: coef < 0 ? '−' : '+', str: absStr + varStr };
+  }
+
+  function update() {
+    const deg = parseFloat(slider.value);
+    valT.textContent = deg + '°';
+    const theta = deg * Math.PI / 180;
+    const ct = Math.cos(theta), st = Math.sin(theta);
+
+    // Coefficients of A x² + B xy + C y² + D x + E y + F = 0
+    // (derived from rotating y = x² by θ — see comment in section text)
+    const A_ = ct * ct;
+    const B_ = 2 * st * ct;       // = sin(2θ)
+    const C_ = st * st;
+    const D_ = st;
+    const E_ = -ct;
+    // F_ = 0
+
+    // Draw the rotated parabola parametrically
+    let d = '';
+    for (let t = T_MIN; t <= T_MAX; t += T_STEP) {
+      const xMath = t * ct - (t * t) * st;
+      const yMath = t * st + (t * t) * ct;
+      const xPx = CX + xMath * SCALE;
+      const yPx = CY - yMath * SCALE;
+      d += (t === T_MIN ? 'M ' : 'L ') + xPx.toFixed(1) + ' ' + yPx.toFixed(1) + ' ';
+    }
+    curve.setAttribute('d', d);
+
+    // Axis of symmetry: along the direction the parabola opens
+    // (original +y direction, rotated by θ)
+    const axDirX = -st, axDirY = ct;       // rotated (0,1)
+    const farLen = 250;
+    const x2 = CX + axDirX * farLen;
+    const y2 = CY - axDirY * farLen;
+    axis.setAttribute('x1', CX); axis.setAttribute('y1', CY);
+    axis.setAttribute('x2', x2); axis.setAttribute('y2', y2);
+
+    // Readouts
+    rA.textContent = fmt(A_);
+    rB.innerHTML = '<span style="color:' +
+      (Math.abs(B_) < 0.005 ? 'var(--paper-soft)' : 'var(--c-vertex)') +
+      ';">' + fmt(B_) + '</span>';
+    rC.textContent = fmt(C_);
+    rD.textContent = fmt(D_);
+    rE.textContent = fmt(E_);
+
+    // Build the equation string
+    const terms = [
+      signedTerm(A_, 'x²'),
+      signedTerm(B_, 'xy'),
+      signedTerm(C_, 'y²'),
+      signedTerm(D_, 'x'),
+      signedTerm(E_, 'y')
+    ].filter(t => t !== null);
+
+    let eqStr = '';
+    terms.forEach((t, i) => {
+      if (i === 0) {
+        eqStr += (t.sign === '−' ? '−' : '') + t.str;
+      } else {
+        eqStr += ' ' + t.sign + ' ' + t.str;
+      }
+    });
+    eqStr += ' = 0';
+    rEq.textContent = eqStr;
+
+    // Orientation label
+    let orient;
+    const tol = 1;
+    if (Math.abs(deg) < tol || Math.abs(deg - 360) < tol)        orient = 'opens up';
+    else if (Math.abs(deg - 90) < tol)  orient = 'opens left';
+    else if (Math.abs(deg - 180) < tol) orient = 'opens down';
+    else if (Math.abs(deg - 270) < tol) orient = 'opens right';
+    else                                 orient = 'tilted ' + deg + '°';
+    rO.textContent = orient;
+  }
+
+  slider.addEventListener('input', update);
+  update();
+})();
+</script>
+
+</body>
+</html>

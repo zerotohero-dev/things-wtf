@@ -1,0 +1,1 @@
+34. learning.things.wtf: https://www.todoist.com/inspiration/feynman-technique
